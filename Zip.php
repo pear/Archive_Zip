@@ -151,7 +151,7 @@ class Archive_Zip
 
     // {{{ create()
     /**
-    * This method creates a Zip Archive with the filename set during with
+    * This method creates a Zip Archive with the filename set with
 	* the constructor.
 	* The files and directories indicated in $p_filelist
     * are added in the archive.
@@ -570,7 +570,7 @@ class Archive_Zip
 
         // ----- Look if the $p_archive is a Archive_Zip object
         if (   (is_object($p_archive))
-		    && (get_class($p_archive) == 'archive_zip')) {
+		    && (strtolower(get_class($p_archive)) == 'archive_zip')) {
             $v_result = $this->_duplicate($p_archive->_zipname);
         }
 
@@ -623,7 +623,7 @@ class Archive_Zip
 
         // ----- Look if the $p_archive_to_add is a Archive_Zip object
         if (   (is_object($p_archive_to_add))
-		    && (get_class($p_archive_to_add) == 'archive_zip')) {
+		    && (strtolower(get_class($p_archive_to_add)) == 'archive_zip')) {
             $v_result = $this->_merge($p_archive_to_add);
         }
 
