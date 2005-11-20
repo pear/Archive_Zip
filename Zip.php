@@ -13,12 +13,12 @@
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
-// | Author: Vincent Blavet <vincent@blavet.net>                          |
+// | Author: Vincent Blavet <vincent@phpconcept.net>                          |
 // +----------------------------------------------------------------------+
 //
 // $Id$
 
-  require_once 'PEAR.php';
+	require_once 'PEAR.php';
 
   // ----- Constants
   define( 'ARCHIVE_ZIP_READ_BLOCK_SIZE', 2048 );

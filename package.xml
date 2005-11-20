@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE package SYSTEM "package.dtd">
+<package version="1.0">
+  <name>Archive_Zip</name>
+  <summary>Zip file management class</summary>
+  <description>This class provides handling of zip files in PHP.
+It supports creating, listing, extracting and adding to zip files.
+</description>
+  <license>GPL</license>
+  <maintainers>
+    <maintainer>
+      <user>vblavet</user>
+      <role>lead</role>
+      <name>Vincent Blavet</name>
+      <email>vincent@blavet.net</email>
+    </maintainer>
+  </maintainers>
+  <release>
+    <version>0.1.0</version>
+    <date>2005-11-20</date>
+    <notes>First release
+</notes>
+    <state>beta</state>
+    <filelist>
+        <file role="php" name="Zip.php"/>
+    </filelist>
+  </release>
+  <changelog>
+    <release>
+      <version>0.1.0</version>
+      <date>2005-11-20</date>
+      <notes>First release</notes>
+      <state>beta</state>
+      <filelist>
+          <file role="php" name="Zip.php"/>
+      </filelist>
+    </release>
+  </changelog>
+</package>
