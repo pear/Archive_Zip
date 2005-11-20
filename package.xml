@@ -18,11 +18,20 @@ It supports creating, listing, extracting and adding to zip files.
   <release>
     <version>0.1.0</version>
     <date>2005-11-20</date>
+    <state>beta</state>
     <notes>First release
 </notes>
-    <state>beta</state>
+    <provides type="class" name="Archive_Zip" />
+    <provides type="function" name="Archive_Zip::create" />
+    <provides type="function" name="Archive_Zip::add" />
+    <provides type="function" name="Archive_Zip::delete" />
+    <provides type="function" name="Archive_Zip::duplicate" />
+    <provides type="function" name="Archive_Zip::listContent" />
+    <provides type="function" name="Archive_Zip::merge" />
+    <provides type="function" name="Archive_Zip::extract" />
+    <provides type="function" name="Archive_Zip::properties" />
     <filelist>
-        <file role="php" name="Zip.php"/>
+      <file role="php" baseinstalldir="/" name="Archive/Zip.php"/>
     </filelist>
   </release>
   <changelog>
@@ -30,10 +39,6 @@ It supports creating, listing, extracting and adding to zip files.
       <version>0.1.0</version>
       <date>2005-11-20</date>
       <notes>First release</notes>
-      <state>beta</state>
-      <filelist>
-          <file role="php" name="Zip.php"/>
-      </filelist>
     </release>
   </changelog>
 </package>
