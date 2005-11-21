@@ -6,7 +6,7 @@
   <description>This class provides handling of zip files in PHP.
 It supports creating, listing, extracting and adding to zip files.
 </description>
-  <license>GPL</license>
+  <license>LGPL</license>
   <maintainers>
     <maintainer>
       <user>vblavet</user>

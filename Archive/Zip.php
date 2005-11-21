@@ -5,20 +5,27 @@
 // +----------------------------------------------------------------------+
 // | Copyright (c) 1997-2003 The PHP Group                                |
 // +----------------------------------------------------------------------+
-// | This source file is subject to version 3.0 of the PHP license,       |
-// | that is bundled with this package in the file LICENSE, and is        |
-// | available through the world-wide-web at the following url:           |
-// | http://www.php.net/license/3_0.txt.                                  |
-// | If you did not receive a copy of the PHP license and are unable to   |
-// | obtain it through the world-wide-web, please send a note to          |
-// | license@php.net so we can mail you a copy immediately.               |
+// | This library is free software; you can redistribute it and/or        |
+// | modify it under the terms of the GNU Lesser General Public           |
+// | License as published by the Free Software Foundation; either         |
+// | version 2.1 of the License, or (at your option) any later version.   |
+// |                                                                      |
+// | This library is distributed in the hope that it will be useful,      |
+// | but WITHOUT ANY WARRANTY; without even the implied warranty of       |
+// | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU    |
+// | Lesser General Public License for more details.                      |
+// |                                                                      |
+// | You should have received a copy of the GNU Lesser General Public     |
+// | License along with this library; if not, write to the Free Software  |
+// | Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,           |
+// | MA  02110-1301  USA                                                  |
 // +----------------------------------------------------------------------+
-// | Author: Vincent Blavet <vincent@phpconcept.net>                          |
+// | Author: Vincent Blavet <vincent@phpconcept.net>                      |
 // +----------------------------------------------------------------------+
 //
 // $Id$
 
-	require_once 'PEAR.php';
+  require_once 'PEAR.php';
 
   // ----- Constants
   define( 'ARCHIVE_ZIP_READ_BLOCK_SIZE', 2048 );
