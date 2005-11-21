@@ -17,7 +17,7 @@ It supports creating, listing, extracting and adding to zip files.
   </maintainers>
   <release>
     <version>0.1.0</version>
-    <date>2005-11-20</date>
+    <date>2005-11-21</date>
     <state>beta</state>
     <notes>First release
 </notes>
@@ -37,7 +37,7 @@ It supports creating, listing, extracting and adding to zip files.
   <changelog>
     <release>
       <version>0.1.0</version>
-      <date>2005-11-20</date>
+      <date>2005-11-21</date>
       <notes>First release</notes>
     </release>
   </changelog>
