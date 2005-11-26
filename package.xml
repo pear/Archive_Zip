@@ -16,10 +16,10 @@ It supports creating, listing, extracting and adding to zip files.
     </maintainer>
   </maintainers>
   <release>
-    <version>0.1.0</version>
-    <date>2005-11-21</date>
+    <version>0.1.1</version>
+    <date>2005-11-26</date>
     <state>beta</state>
-    <notes>First release
+    <notes>Correct package download problem
 </notes>
     <provides type="class" name="Archive_Zip" />
     <provides type="function" name="Archive_Zip::create" />
@@ -38,6 +38,7 @@ It supports creating, listing, extracting and adding to zip files.
     <release>
       <version>0.1.0</version>
       <date>2005-11-21</date>
+      <state>beta</state>
       <notes>First release</notes>
     </release>
   </changelog>
