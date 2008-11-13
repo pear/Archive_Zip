@@ -1126,7 +1126,7 @@ class Archive_Zip
         $v_nb = sizeof($p_result_list);
 
         // ----- Loop on the files
-        for ($j = 0; ($j<count($p_list)) && ($v_result = =1); $j++) {
+        for ($j = 0; ($j<count($p_list)) && ($v_result == 1); $j++) {
             // ----- Recuperate the filename
             $p_filename = $this->_tool_TranslateWinPath($p_list[$j], false);
 
