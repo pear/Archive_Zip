@@ -102,38 +102,38 @@ define('ARCHIVE_ZIP_PARAM_POST_ADD', 'callback_post_add');
 class Archive_Zip
 {
     /**
-    * The filename of the zip archive.
-    *
-    * @var string Name of the Zip file
-    */
+     * The filename of the zip archive.
+     *
+     * @var string Name of the Zip file
+     */
     var $_zipname='';
 
     /**
-    * File descriptor of the opened Zip file.
-    *
-    * @var int Internal zip file descriptor
-    */
+     * File descriptor of the opened Zip file.
+     *
+     * @var int Internal zip file descriptor
+     */
     var $_zip_fd=0;
 
     /**
-    * @var int last error code
-    */
+     * @var int last error code
+     */
     var $_error_code=1;
 
     /**
-    * @var string Last error description
-    */
+     * @var string Last error description
+     */
     var $_error_string='';
 
     // {{{ constructor
     /**
-    * Archive_Zip Class constructor. This flavour of the constructor only
-    * declare a new Archive_Zip object, identifying it by the name of the
-    * zip file.
-    *
-    * @param    string  $p_zipname  The name of the zip archive to create
-    * @access public
-    */
+     * Archive_Zip Class constructor. This flavour of the constructor only
+     * declare a new Archive_Zip object, identifying it by the name of the
+     * zip file.
+     *
+     * @param    string  $p_zipname  The name of the zip archive to create
+     * @access public
+     */
     function Archive_Zip($p_zipname)
     {
 
@@ -158,27 +158,27 @@ class Archive_Zip
 
     // {{{ create()
     /**
-    * This method creates a Zip Archive with the filename set with
-    * the constructor.
-    * The files and directories indicated in $p_filelist
-    * are added in the archive.
-    * When a directory is in the list, the directory and its content is added
-    * in the archive.
-    * The methods takes a variable list of parameters in $p_params.
-    * The supported parameters for this method are :
-    *   'add_path' : Add a path to the archived files.
-    *   'remove_path' : Remove the specified 'root' path of the archived files.
-    *   'remove_all_path' : Remove all the path of the archived files.
-    *   'no_compression' : The archived files will not be compressed.
-    *
-    * @access public
-    * @param  mixed  $p_filelist  The list of the files or folders to add.
-    *                             It can be a string with filenames separated
-    *                             by a comma, or an array of filenames.
-    * @param  mixed  $p_params  An array of variable parameters and values.
-    * @return mixed An array of file description on success,
-    *               an error code on error
-    */
+     * This method creates a Zip Archive with the filename set with
+     * the constructor.
+     * The files and directories indicated in $p_filelist
+     * are added in the archive.
+     * When a directory is in the list, the directory and its content is added
+     * in the archive.
+     * The methods takes a variable list of parameters in $p_params.
+     * The supported parameters for this method are :
+     *   'add_path' : Add a path to the archived files.
+     *   'remove_path' : Remove the specified 'root' path of the archived files.
+     *   'remove_all_path' : Remove all the path of the archived files.
+     *   'no_compression' : The archived files will not be compressed.
+     *
+     * @access public
+     * @param  mixed  $p_filelist  The list of the files or folders to add.
+     *                             It can be a string with filenames separated
+     *                             by a comma, or an array of filenames.
+     * @param  mixed  $p_params  An array of variable parameters and values.
+     * @return mixed An array of file description on success,
+     *               an error code on error
+     */
     function create($p_filelist, $p_params=0)
     {
         $this->_errorReset();
@@ -226,30 +226,30 @@ class Archive_Zip
 
     // {{{ add()
     /**
-    * This method add files or directory in an existing Zip Archive.
-    * If the Zip Archive does not exist it is created.
-    * The files and directories to add are indicated in $p_filelist.
-    * When a directory is in the list, the directory and its content is added
-    * in the archive.
-    * The methods takes a variable list of parameters in $p_params.
-    * The supported parameters for this method are :
-    *   'add_path' : Add a path to the archived files.
-    *   'remove_path' : Remove the specified 'root' path of the archived files.
-    *   'remove_all_path' : Remove all the path of the archived files.
-    *   'no_compression' : The archived files will not be compressed.
-    *   'callback_pre_add' : A callback function that will be called before
-    *                        each entry archiving.
-    *   'callback_post_add' : A callback function that will be called after
-    *                         each entry archiving.
-    *
-    * @access public
-    * @param    mixed  $p_filelist  The list of the files or folders to add.
-    *                               It can be a string with filenames separated
-    *                               by a comma, or an array of filenames.
-    * @param    mixed  $p_params  An array of variable parameters and values.
-    * @return mixed An array of file description on success,
-    *               0 on an unrecoverable failure, an error code is logged.
-    */
+     * This method add files or directory in an existing Zip Archive.
+     * If the Zip Archive does not exist it is created.
+     * The files and directories to add are indicated in $p_filelist.
+     * When a directory is in the list, the directory and its content is added
+     * in the archive.
+     * The methods takes a variable list of parameters in $p_params.
+     * The supported parameters for this method are :
+     *   'add_path' : Add a path to the archived files.
+     *   'remove_path' : Remove the specified 'root' path of the archived files.
+     *   'remove_all_path' : Remove all the path of the archived files.
+     *   'no_compression' : The archived files will not be compressed.
+     *   'callback_pre_add' : A callback function that will be called before
+     *                        each entry archiving.
+     *   'callback_post_add' : A callback function that will be called after
+     *                         each entry archiving.
+     *
+     * @access public
+     * @param    mixed  $p_filelist  The list of the files or folders to add.
+     *                               It can be a string with filenames separated
+     *                               by a comma, or an array of filenames.
+     * @param    mixed  $p_params  An array of variable parameters and values.
+     * @return mixed An array of file description on success,
+     *               0 on an unrecoverable failure, an error code is logged.
+     */
     function add($p_filelist, $p_params=0)
     {
         $this->_errorReset();
@@ -302,48 +302,48 @@ class Archive_Zip
 
     // {{{ listContent()
     /**
-    * This method gives the names and properties of the files and directories
-    * which are present in the zip archive.
-    * The properties of each entries in the list are :
-    *   filename : Name of the file.
-    *              For create() or add() it's the filename given by the user.
-    *              For an extract() it's the filename of the extracted file.
-    *   stored_filename : Name of the file / directory stored in the archive.
-    *   size : Size of the stored file.
-    *   compressed_size : Size of the file's data compressed in the archive
-    *                     (without the zip headers overhead)
-    *   mtime : Last known modification date of the file (UNIX timestamp)
-    *   comment : Comment associated with the file
-    *   folder : true | false (indicates if the entry is a folder)
-    *   index : index of the file in the archive (-1 when not available)
-    *   status : status of the action on the entry (depending of the action) :
-    *            Values are :
-    *              ok : OK !
-    *              filtered : the file/dir was not extracted (filtered by user)
-    *              already_a_directory : the file can't be extracted because a
-    *                                    directory with the same name already
-    *                                    exists
-    *              write_protected : the file can't be extracted because a file
-    *                                with the same name already exists and is
-    *                                write protected
-    *              newer_exist : the file was not extracted because a newer
-    *                            file already exists
-    *              path_creation_fail : the file is not extracted because the
-    *                                   folder does not exists and can't be
-    *                                   created
-    *              write_error : the file was not extracted because there was a
-    *                            error while writing the file
-    *              read_error : the file was not extracted because there was a
-    *                           error while reading the file
-    *              invalid_header : the file was not extracted because of an
-    *                               archive format error (bad file header)
-    * Note that each time a method can continue operating when there
-    * is an error on a single file, the error is only logged in the file status.
-    *
-    * @access public
-    * @return mixed An array of file description on success,
-    *               0 on an unrecoverable failure, an error code is logged.
-    */
+     * This method gives the names and properties of the files and directories
+     * which are present in the zip archive.
+     * The properties of each entries in the list are :
+     *   filename : Name of the file.
+     *              For create() or add() it's the filename given by the user.
+     *              For an extract() it's the filename of the extracted file.
+     *   stored_filename : Name of the file / directory stored in the archive.
+     *   size : Size of the stored file.
+     *   compressed_size : Size of the file's data compressed in the archive
+     *                     (without the zip headers overhead)
+     *   mtime : Last known modification date of the file (UNIX timestamp)
+     *   comment : Comment associated with the file
+     *   folder : true | false (indicates if the entry is a folder)
+     *   index : index of the file in the archive (-1 when not available)
+     *   status : status of the action on the entry (depending of the action) :
+     *            Values are :
+     *              ok : OK !
+     *              filtered : the file/dir was not extracted (filtered by user)
+     *              already_a_directory : the file can't be extracted because a
+     *                                    directory with the same name already
+     *                                    exists
+     *              write_protected : the file can't be extracted because a file
+     *                                with the same name already exists and is
+     *                                write protected
+     *              newer_exist : the file was not extracted because a newer
+     *                            file already exists
+     *              path_creation_fail : the file is not extracted because the
+     *                                   folder does not exists and can't be
+     *                                   created
+     *              write_error : the file was not extracted because there was a
+     *                            error while writing the file
+     *              read_error : the file was not extracted because there was a
+     *                           error while reading the file
+     *              invalid_header : the file was not extracted because of an
+     *                               archive format error (bad file header)
+     * Note that each time a method can continue operating when there
+     * is an error on a single file, the error is only logged in the file status.
+     *
+     * @access public
+     * @return mixed An array of file description on success,
+     *               0 on an unrecoverable failure, an error code is logged.
+     */
     function listContent()
     {
         $this->_errorReset();
@@ -365,42 +365,42 @@ class Archive_Zip
 
     // {{{ extract()
     /**
-    * This method extract the files and folders which are in the zip archive.
-    * It can extract all the archive or a part of the archive by using filter
-    * feature (extract by name, by index, by ereg, by preg). The extraction
-    * can occur in the current path or an other path.
-    * All the advanced features are activated by the use of variable
-    * parameters.
-    * The return value is an array of entry descriptions which gives
-    * information on extracted files (See listContent()).
-    * The method may return a success value (an array) even if some files
-    * are not correctly extracted (see the file status in listContent()).
-    * The supported variable parameters for this method are :
-    *   'add_path' : Path where the files and directories are to be extracted
-    *   'remove_path' : First part ('root' part) of the memorized path
-    *                   (if similar) to remove while extracting.
-    *   'remove_all_path' : Remove all the memorized path while extracting.
-    *   'extract_as_string' :
-    *   'set_chmod' : After the extraction of the file the indicated mode
-    *                 will be set.
-    *   'by_name' : It can be a string with file/dir names separated by ',',
-    *               or an array of file/dir names to extract from the archive.
-    *   'by_index' : A string with range of indexes separated by ',',
-    *                (sample "1,3-5,12").
-    *   'by_ereg' : A regular expression (ereg) that must match the extracted
-    *               filename.
-    *   'by_preg' : A regular expression (preg) that must match the extracted
-    *               filename.
-    *   'callback_pre_extract' : A callback function that will be called before
-    *                            each entry extraction.
-    *   'callback_post_extract' : A callback function that will be called after
-    *                            each entry extraction.
-    *
-    * @access public
-    * @param    mixed  $p_params  An array of variable parameters and values.
-    * @return mixed An array of file description on success,
-    *               0 on an unrecoverable failure, an error code is logged.
-    */
+     * This method extract the files and folders which are in the zip archive.
+     * It can extract all the archive or a part of the archive by using filter
+     * feature (extract by name, by index, by ereg, by preg). The extraction
+     * can occur in the current path or an other path.
+     * All the advanced features are activated by the use of variable
+     * parameters.
+     * The return value is an array of entry descriptions which gives
+     * information on extracted files (See listContent()).
+     * The method may return a success value (an array) even if some files
+     * are not correctly extracted (see the file status in listContent()).
+     * The supported variable parameters for this method are :
+     *   'add_path' : Path where the files and directories are to be extracted
+     *   'remove_path' : First part ('root' part) of the memorized path
+     *                   (if similar) to remove while extracting.
+     *   'remove_all_path' : Remove all the memorized path while extracting.
+     *   'extract_as_string' :
+     *   'set_chmod' : After the extraction of the file the indicated mode
+     *                 will be set.
+     *   'by_name' : It can be a string with file/dir names separated by ',',
+     *               or an array of file/dir names to extract from the archive.
+     *   'by_index' : A string with range of indexes separated by ',',
+     *                (sample "1,3-5,12").
+     *   'by_ereg' : A regular expression (ereg) that must match the extracted
+     *               filename.
+     *   'by_preg' : A regular expression (preg) that must match the extracted
+     *               filename.
+     *   'callback_pre_extract' : A callback function that will be called before
+     *                            each entry extraction.
+     *   'callback_post_extract' : A callback function that will be called after
+     *                            each entry extraction.
+     *
+     * @access public
+     * @param    mixed  $p_params  An array of variable parameters and values.
+     * @return mixed An array of file description on success,
+     *               0 on an unrecoverable failure, an error code is logged.
+     */
     function extract($p_params=0)
     {
 
@@ -444,26 +444,26 @@ class Archive_Zip
 
     // {{{ delete()
     /**
-    * This methods delete archive entries in the zip archive.
-    * Notice that at least one filtering rule (set by the variable parameter
-    * list) must be set.
-    * Also notice that if you delete a folder entry, only the folder entry
-    * is deleted, not all the files bellonging to this folder.
-    * The supported variable parameters for this method are :
-    *   'by_name' : It can be a string with file/dir names separated by ',',
-    *               or an array of file/dir names to delete from the archive.
-    *   'by_index' : A string with range of indexes separated by ',',
-    *                (sample "1,3-5,12").
-    *   'by_ereg' : A regular expression (ereg) that must match the extracted
-    *               filename.
-    *   'by_preg' : A regular expression (preg) that must match the extracted
-    *               filename.
-    *
-    * @access public
-    * @param    mixed  $p_params  An array of variable parameters and values.
-    * @return mixed An array of file description on success,
-    *               0 on an unrecoverable failure, an error code is logged.
-    */
+     * This methods delete archive entries in the zip archive.
+     * Notice that at least one filtering rule (set by the variable parameter
+     * list) must be set.
+     * Also notice that if you delete a folder entry, only the folder entry
+     * is deleted, not all the files bellonging to this folder.
+     * The supported variable parameters for this method are :
+     *   'by_name' : It can be a string with file/dir names separated by ',',
+     *               or an array of file/dir names to delete from the archive.
+     *   'by_index' : A string with range of indexes separated by ',',
+     *                (sample "1,3-5,12").
+     *   'by_ereg' : A regular expression (ereg) that must match the extracted
+     *               filename.
+     *   'by_preg' : A regular expression (preg) that must match the extracted
+     *               filename.
+     *
+     * @access public
+     * @param    mixed  $p_params  An array of variable parameters and values.
+     * @return mixed An array of file description on success,
+     *               0 on an unrecoverable failure, an error code is logged.
+     */
     function delete($p_params)
     {
         $this->_errorReset();
@@ -506,16 +506,16 @@ class Archive_Zip
 
     // {{{ properties()
     /**
-    * This method gives the global properties of the archive.
-    *  The properties are :
-    *    nb : Number of files in the archive
-    *    comment : Comment associated with the archive file
-    *    status : not_exist, ok
-    *
-    * @access public
-    * @param    mixed  $p_params  {Description}
-    * @return mixed An array with the global properties or 0 on error.
-    */
+     * This method gives the global properties of the archive.
+     *  The properties are :
+     *    nb : Number of files in the archive
+     *    comment : Comment associated with the archive file
+     *    status : not_exist, ok
+     *
+     * @access public
+     * @param    mixed  $p_params  {Description}
+     * @return mixed An array with the global properties or 0 on error.
+     */
     function properties()
     {
         $this->_errorReset();
@@ -562,15 +562,15 @@ class Archive_Zip
 
     // {{{ duplicate()
     /**
-    * This method creates an archive by copying the content of an other one.
-    * If the archive already exist, it is replaced by the new one without
-    * any warning.
-    *
-    * @access public
-    * @param  mixed  $p_archive  It can be a valid Archive_Zip object or
-    *                            the filename of a valid zip archive.
-    * @return integer 1 on success, 0 on failure.
-    */
+     * This method creates an archive by copying the content of an other one.
+     * If the archive already exist, it is replaced by the new one without
+     * any warning.
+     *
+     * @access public
+     * @param  mixed  $p_archive  It can be a valid Archive_Zip object or
+     *                            the filename of a valid zip archive.
+     * @return integer 1 on success, 0 on failure.
+     */
     function duplicate($p_archive)
     {
         $this->_errorReset();
@@ -608,16 +608,16 @@ class Archive_Zip
 
     // {{{ merge()
     /**
-    *  This method merge a valid zip archive at the end of the
-    *  archive identified by the Archive_Zip object.
-    *  If the archive ($this) does not exist, the merge becomes a duplicate.
-    *  If the archive to add does not exist, the merge is a success.
-    *
-    * @access public
-    * @param mixed $p_archive_to_add  It can be a valid Archive_Zip object or
-    *                                 the filename of a valid zip archive.
-    * @return integer 1 on success, 0 on failure.
-    */
+     *  This method merge a valid zip archive at the end of the
+     *  archive identified by the Archive_Zip object.
+     *  If the archive ($this) does not exist, the merge becomes a duplicate.
+     *  If the archive to add does not exist, the merge is a success.
+     *
+     * @access public
+     * @param mixed $p_archive_to_add  It can be a valid Archive_Zip object or
+     *                                 the filename of a valid zip archive.
+     * @return integer 1 on success, 0 on failure.
+     */
     function merge($p_archive_to_add)
     {
         $v_result = 1;
@@ -656,11 +656,11 @@ class Archive_Zip
 
     // {{{ errorCode()
     /**
-    * Method that gives the lastest error code.
-    *
-    * @access public
-    * @return integer The error code value.
-    */
+     * Method that gives the lastest error code.
+     *
+     * @access public
+     * @return integer The error code value.
+     */
     function errorCode()
     {
         return($this->_error_code);
@@ -669,12 +669,12 @@ class Archive_Zip
 
     // {{{ errorName()
     /**
-    * This method gives the latest error code name.
-    *
-    * @access public
-    * @param  boolean $p_with_code  If true, gives the name and the int value.
-    * @return string The error name.
-    */
+     * This method gives the latest error code name.
+     *
+     * @access public
+     * @param  boolean $p_with_code  If true, gives the name and the int value.
+     * @return string The error name.
+     */
     function errorName($p_with_code=false)
     {
         $v_const_list = get_defined_constants();
@@ -707,15 +707,15 @@ class Archive_Zip
 
     // {{{ errorInfo()
     /**
-    * This method returns the description associated with the latest error.
-    *
-    * @access public
-    * @param  boolean $p_full If set to true gives the description with the
-    *                         error code, the name and the description.
-    *                         If set to false gives only the description
-    *                         and the error code.
-    * @return string The error description.
-    */
+     * This method returns the description associated with the latest error.
+     *
+     * @access public
+     * @param  boolean $p_full If set to true gives the description with the
+     *                         error code, the name and the description.
+     *                         If set to false gives only the description
+     *                         and the error code.
+     * @return string The error description.
+     */
     function errorInfo($p_full=false)
     {
         if ($p_full) {
@@ -1033,127 +1033,127 @@ class Archive_Zip
         // ----- Return
         return $v_result;
     }
-  // ---------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------
 
-  // ---------------------------------------------------------------------------
-  // Function : _closeFd()
-  // Description :
-  // Parameters :
-  // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_closeFd()
-  *
-  * { Description }
-  *
-  */
-  function _closeFd()
-  {
-    $v_result=1;
-
-    if ($this->_zip_fd != 0)
-      @fclose($this->_zip_fd);
-    $this->_zip_fd = 0;
-
-    // ----- Return
-    return $v_result;
-  }
-  // ---------------------------------------------------------------------------
-
-  // ---------------------------------------------------------------------------
-  // Function : _addList()
-  // Description :
-  //   $p_add_dir and $p_remove_dir will give the ability to memorize a path which is
-  //   different from the real path of the file. This is usefull if you want to have PclTar
-  //   running in any directory, and memorize relative path from an other directory.
-  // Parameters :
-  //   $p_list : An array containing the file or directory names to add in the tar
-  //   $p_result_list : list of added files with their properties (specially the status field)
-  //   $p_add_dir : Path to add in the filename path archived
-  //   $p_remove_dir : Path to remove in the filename path archived
-  // Return Values :
-  // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_addList()
-  *
-  * { Description }
-  *
-  */
-  function _addList($p_list, &$p_result_list,
-                    $p_add_dir, $p_remove_dir, $p_remove_all_dir, &$p_params)
-  {
-    $v_result=1;
-
-    // ----- Add the files
-    $v_header_list = array();
-    if (($v_result = $this->_addFileList($p_list, $v_header_list,
-                                         $p_add_dir, $p_remove_dir,
-                                         $p_remove_all_dir, $p_params)) != 1) {
-      return $v_result;
-    }
-
-    // ----- Store the offset of the central dir
-    $v_offset = @ftell($this->_zip_fd);
-
-    // ----- Create the Central Dir files header
-    for ($i=0, $v_count=0; $i<sizeof($v_header_list); $i++)
+    // ---------------------------------------------------------------------------
+    // Function : _closeFd()
+    // Description :
+    // Parameters :
+    // ---------------------------------------------------------------------------
+    /**
+     * Archive_Zip::_closeFd()
+     *
+     * { Description }
+     *
+     */
+    function _closeFd()
     {
-      // ----- Create the file header
-      if ($v_header_list[$i]['status'] == 'ok') {
-        if (($v_result = $this->_writeCentralFileHeader($v_header_list[$i])) != 1) {
+        $v_result=1;
+
+        if ($this->_zip_fd != 0)
+          @fclose($this->_zip_fd);
+        $this->_zip_fd = 0;
+
+        // ----- Return
+        return $v_result;
+    }
+    // ---------------------------------------------------------------------------
+
+    // ---------------------------------------------------------------------------
+    // Function : _addList()
+    // Description :
+    //   $p_add_dir and $p_remove_dir will give the ability to memorize a path which is
+    //   different from the real path of the file. This is usefull if you want to have PclTar
+    //   running in any directory, and memorize relative path from an other directory.
+    // Parameters :
+    //   $p_list : An array containing the file or directory names to add in the tar
+    //   $p_result_list : list of added files with their properties (specially the status field)
+    //   $p_add_dir : Path to add in the filename path archived
+    //   $p_remove_dir : Path to remove in the filename path archived
+    // Return Values :
+    // ---------------------------------------------------------------------------
+    /**
+     * Archive_Zip::_addList()
+     *
+     * { Description }
+     *
+     */
+    function _addList($p_list, &$p_result_list,
+                    $p_add_dir, $p_remove_dir, $p_remove_all_dir, &$p_params)
+    {
+        $v_result=1;
+
+        // ----- Add the files
+        $v_header_list = array();
+        if (($v_result = $this->_addFileList($p_list, $v_header_list,
+                                             $p_add_dir, $p_remove_dir,
+                                             $p_remove_all_dir, $p_params)) != 1) {
           return $v_result;
         }
-        $v_count++;
-      }
 
-      // ----- Transform the header to a 'usable' info
-      $this->_convertHeader2FileInfo($v_header_list[$i], $p_result_list[$i]);
+        // ----- Store the offset of the central dir
+        $v_offset = @ftell($this->_zip_fd);
+
+        // ----- Create the Central Dir files header
+        for ($i=0, $v_count=0; $i<sizeof($v_header_list); $i++)
+        {
+          // ----- Create the file header
+          if ($v_header_list[$i]['status'] == 'ok') {
+            if (($v_result = $this->_writeCentralFileHeader($v_header_list[$i])) != 1) {
+              return $v_result;
+            }
+            $v_count++;
+          }
+
+          // ----- Transform the header to a 'usable' info
+          $this->_convertHeader2FileInfo($v_header_list[$i], $p_result_list[$i]);
+        }
+
+        // ----- Zip file comment
+        $v_comment = '';
+
+        // ----- Calculate the size of the central header
+        $v_size = @ftell($this->_zip_fd)-$v_offset;
+
+        // ----- Create the central dir footer
+        if (($v_result = $this->_writeCentralHeader($v_count, $v_size, $v_offset,
+                                                    $v_comment)) != 1)
+        {
+          // ----- Reset the file list
+          unset($v_header_list);
+
+          // ----- Return
+          return $v_result;
+        }
+
+        // ----- Return
+        return $v_result;
     }
+    // ---------------------------------------------------------------------------
 
-    // ----- Zip file comment
-    $v_comment = '';
-
-    // ----- Calculate the size of the central header
-    $v_size = @ftell($this->_zip_fd)-$v_offset;
-
-    // ----- Create the central dir footer
-    if (($v_result = $this->_writeCentralHeader($v_count, $v_size, $v_offset,
-                                                $v_comment)) != 1)
-    {
-      // ----- Reset the file list
-      unset($v_header_list);
-
-      // ----- Return
-      return $v_result;
-    }
-
-    // ----- Return
-    return $v_result;
-  }
-  // ---------------------------------------------------------------------------
-
-  // ---------------------------------------------------------------------------
-  // Function : _addFileList()
-  // Description :
-  //   $p_add_dir and $p_remove_dir will give the ability to memorize a path which is
-  //   different from the real path of the file. This is usefull if you want to
-  //   run the lib in any directory, and memorize relative path from an other directory.
-  // Parameters :
-  //   $p_list : An array containing the file or directory names to add in the tar
-  //   $p_result_list : list of added files with their properties (specially the status field)
-  //   $p_add_dir : Path to add in the filename path archived
-  //   $p_remove_dir : Path to remove in the filename path archived
-  // Return Values :
-  // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_addFileList()
-  *
-  * { Description }
-  *
-  */
-  function _addFileList($p_list, &$p_result_list,
+    // ---------------------------------------------------------------------------
+    // Function : _addFileList()
+    // Description :
+    //   $p_add_dir and $p_remove_dir will give the ability to memorize a path which is
+    //   different from the real path of the file. This is usefull if you want to
+    //   run the lib in any directory, and memorize relative path from an other directory.
+    // Parameters :
+    //   $p_list : An array containing the file or directory names to add in the tar
+    //   $p_result_list : list of added files with their properties (specially the status field)
+    //   $p_add_dir : Path to add in the filename path archived
+    //   $p_remove_dir : Path to remove in the filename path archived
+    // Return Values :
+    // ---------------------------------------------------------------------------
+    /**
+     * Archive_Zip::_addFileList()
+     *
+     * { Description }
+     *
+     */
+    function _addFileList($p_list, &$p_result_list,
                         $p_add_dir, $p_remove_dir, $p_remove_all_dir,
                         &$p_params)
-  {
+    {
     $v_result=1;
     $v_header = array();
 
@@ -1242,7 +1242,7 @@ class Archive_Zip
     }
 
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------
@@ -1251,14 +1251,14 @@ class Archive_Zip
   // Parameters :
   // Return Values :
   // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_addFile()
-  *
-  * { Description }
-  *
-  */
-  function _addFile($p_filename, &$p_header, $p_add_dir, $p_remove_dir, $p_remove_all_dir, &$p_params)
-  {
+    /**
+     * Archive_Zip::_addFile()
+     *
+     * { Description }
+     *
+     */
+    function _addFile($p_filename, &$p_header, $p_add_dir, $p_remove_dir, $p_remove_all_dir, &$p_params)
+    {
     $v_result=1;
 
     if ($p_filename == "")
@@ -1327,7 +1327,7 @@ class Archive_Zip
       // ----- Return
       return Archive_Zip::errorCode();
     }
-    */
+     */
 
     // ----- Set the file properties
     clearstatcache();
@@ -1475,23 +1475,23 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
-  // ---------------------------------------------------------------------------
+    }
+    // ---------------------------------------------------------------------------
 
-  // ---------------------------------------------------------------------------
-  // Function : _writeFileHeader()
-  // Description :
-  // Parameters :
-  // Return Values :
-  // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_writeFileHeader()
-  *
-  * { Description }
-  *
-  */
-  function _writeFileHeader(&$p_header)
-  {
+    // ---------------------------------------------------------------------------
+    // Function : _writeFileHeader()
+    // Description :
+    // Parameters :
+    // Return Values :
+    // ---------------------------------------------------------------------------
+    /**
+     * Archive_Zip::_writeFileHeader()
+     *
+     * { Description }
+     *
+     */
+    function _writeFileHeader(&$p_header)
+    {
     $v_result=1;
 
     // TBC
@@ -1527,23 +1527,23 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
-  // ---------------------------------------------------------------------------
+    }
+    // ---------------------------------------------------------------------------
 
-  // ---------------------------------------------------------------------------
-  // Function : _writeCentralFileHeader()
-  // Description :
-  // Parameters :
-  // Return Values :
-  // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_writeCentralFileHeader()
-  *
-  * { Description }
-  *
-  */
-  function _writeCentralFileHeader(&$p_header)
-  {
+    // ---------------------------------------------------------------------------
+    // Function : _writeCentralFileHeader()
+    // Description :
+    // Parameters :
+    // Return Values :
+    // ---------------------------------------------------------------------------
+    /**
+     * Archive_Zip::_writeCentralFileHeader()
+     *
+     * { Description }
+     *
+     */
+    function _writeCentralFileHeader(&$p_header)
+    {
     $v_result=1;
 
     // TBC
@@ -1581,7 +1581,7 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------
@@ -1590,14 +1590,14 @@ class Archive_Zip
   // Parameters :
   // Return Values :
   // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_writeCentralHeader()
-  *
-  * { Description }
-  *
-  */
-  function _writeCentralHeader($p_nb_entries, $p_size, $p_offset, $p_comment)
-  {
+    /**
+     * Archive_Zip::_writeCentralHeader()
+     *
+     * { Description }
+     *
+     */
+    function _writeCentralHeader($p_nb_entries, $p_size, $p_offset, $p_comment)
+    {
     $v_result=1;
 
     // ----- Packed data
@@ -1614,7 +1614,7 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------
@@ -1623,14 +1623,14 @@ class Archive_Zip
   // Parameters :
   // Return Values :
   // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_list()
-  *
-  * { Description }
-  *
-  */
-  function _list(&$p_list)
-  {
+    /**
+     * Archive_Zip::_list()
+     *
+     * { Description }
+     *
+     */
+    function _list(&$p_list)
+    {
     $v_result=1;
 
     // ----- Open the zip file
@@ -1681,7 +1681,7 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------
@@ -1702,14 +1702,14 @@ class Archive_Zip
   // Parameters :
   // Return Values :
   // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_convertHeader2FileInfo()
-  *
-  * { Description }
-  *
-  */
-  function _convertHeader2FileInfo($p_header, &$p_info)
-  {
+    /**
+     * Archive_Zip::_convertHeader2FileInfo()
+     *
+     * { Description }
+     *
+     */
+    function _convertHeader2FileInfo($p_header, &$p_info)
+    {
     $v_result=1;
 
     // ----- Get the interesting attributes
@@ -1725,7 +1725,7 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------
@@ -1744,14 +1744,14 @@ class Archive_Zip
   // Return Values :
   //   1 on success,0 or less on error (see error code list)
   // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_extractByRule()
-  *
-  * { Description }
-  *
-  */
-  function _extractByRule(&$p_file_list, &$p_params)
-  {
+    /**
+     * Archive_Zip::_extractByRule()
+     *
+     * { Description }
+     *
+     */
+    function _extractByRule(&$p_file_list, &$p_params)
+    {
     $v_result=1;
 
     $p_path = $p_params['add_path'];
@@ -1970,7 +1970,7 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------
@@ -1979,14 +1979,14 @@ class Archive_Zip
   // Parameters :
   // Return Values :
   // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_extractFile()
-  *
-  * { Description }
-  *
-  */
-  function _extractFile(&$p_entry, $p_path, $p_remove_path, $p_remove_all_path, &$p_params)
-  {
+    /**
+     * Archive_Zip::_extractFile()
+     *
+     * { Description }
+     *
+     */
+    function _extractFile(&$p_entry, $p_path, $p_remove_path, $p_remove_all_path, &$p_params)
+    {
     $v_result=1;
 
     // ----- Read the file header
@@ -2221,7 +2221,7 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------
@@ -2230,14 +2230,14 @@ class Archive_Zip
   // Parameters :
   // Return Values :
   // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_extractFileAsString()
-  *
-  * { Description }
-  *
-  */
-  function _extractFileAsString(&$p_entry, &$p_string)
-  {
+    /**
+     * Archive_Zip::_extractFileAsString()
+     *
+     * { Description }
+     *
+     */
+    function _extractFileAsString(&$p_entry, &$p_string)
+    {
     $v_result=1;
 
     // ----- Read the file header
@@ -2284,7 +2284,7 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------
@@ -2293,14 +2293,14 @@ class Archive_Zip
   // Parameters :
   // Return Values :
   // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_readFileHeader()
-  *
-  * { Description }
-  *
-  */
-  function _readFileHeader(&$p_header)
-  {
+    /**
+     * Archive_Zip::_readFileHeader()
+     *
+     * { Description }
+     *
+     */
+    function _readFileHeader(&$p_header)
+    {
     $v_result=1;
 
     // ----- Read the 4 bytes signature
@@ -2393,7 +2393,7 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------
@@ -2402,14 +2402,14 @@ class Archive_Zip
   // Parameters :
   // Return Values :
   // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_readCentralFileHeader()
-  *
-  * { Description }
-  *
-  */
-  function _readCentralFileHeader(&$p_header)
-  {
+    /**
+     * Archive_Zip::_readCentralFileHeader()
+     *
+     * { Description }
+     *
+     */
+    function _readCentralFileHeader(&$p_header)
+    {
     $v_result=1;
 
     // ----- Read the 4 bytes signature
@@ -2503,7 +2503,7 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------
@@ -2512,14 +2512,14 @@ class Archive_Zip
   // Parameters :
   // Return Values :
   // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_readEndCentralDir()
-  *
-  * { Description }
-  *
-  */
-  function _readEndCentralDir(&$p_central_dir)
-  {
+    /**
+     * Archive_Zip::_readEndCentralDir()
+     *
+     * { Description }
+     *
+     */
+    function _readEndCentralDir(&$p_central_dir)
+    {
     $v_result=1;
 
     // ----- Go to the end of the zip file
@@ -2633,7 +2633,7 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------
@@ -2642,14 +2642,14 @@ class Archive_Zip
   // Parameters :
   // Return Values :
   // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_deleteByRule()
-  *
-  * { Description }
-  *
-  */
-  function _deleteByRule(&$p_result_list, &$p_params)
-  {
+    /**
+     * Archive_Zip::_deleteByRule()
+     *
+     * { Description }
+     *
+     */
+    function _deleteByRule(&$p_result_list, &$p_params)
+    {
     $v_result=1;
     $v_list_detail = array();
 
@@ -2920,7 +2920,7 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------
@@ -2934,15 +2934,15 @@ class Archive_Zip
   //    1 : OK
   //   -1 : Unable to create directory
   // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_dirCheck()
-  *
-  * { Description }
-  *
-  * @param [type] $p_is_dir
-  */
-  function _dirCheck($p_dir, $p_is_dir=false)
-  {
+    /**
+     * Archive_Zip::_dirCheck()
+     *
+     * { Description }
+     *
+     * @param [type] $p_is_dir
+     */
+    function _dirCheck($p_dir, $p_is_dir=false)
+    {
     $v_result = 1;
 
     // ----- Remove the final '/'
@@ -2977,7 +2977,7 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------
@@ -2987,14 +2987,14 @@ class Archive_Zip
   // Parameters :
   // Return Values :
   // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_merge()
-  *
-  * { Description }
-  *
-  */
-  function _merge(&$p_archive_to_add)
-  {
+    /**
+     * Archive_Zip::_merge()
+     *
+     * { Description }
+     *
+     */
+    function _merge(&$p_archive_to_add)
+    {
     $v_result=1;
 
     // ----- Look if the archive_to_add exists
@@ -3156,23 +3156,23 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
-  // ---------------------------------------------------------------------------
-  // Function : _duplicate()
-  // Description :
-  // Parameters :
-  // Return Values :
-  // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_duplicate()
-  *
-  * { Description }
-  *
-  */
-  function _duplicate($p_archive_filename)
-  {
+    // ---------------------------------------------------------------------------
+    // Function : _duplicate()
+    // Description :
+    // Parameters :
+    // Return Values :
+    // ---------------------------------------------------------------------------
+    /**
+     * Archive_Zip::_duplicate()
+     *
+     * { Description }
+     *
+     */
+    function _duplicate($p_archive_filename)
+    {
     $v_result=1;
 
     // ----- Look if the $p_archive_filename exists
@@ -3219,19 +3219,19 @@ class Archive_Zip
     @fclose($v_zip_temp_fd);
 
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
-  /**
-  * Archive_Zip::_check_parameters()
-  *
-  * { Description }
-  *
-  * @param integer $p_error_code
-  * @param string $p_error_string
-  */
-  function _check_parameters(&$p_params, $p_default)
-  {
+    /**
+     * Archive_Zip::_check_parameters()
+     *
+     * { Description }
+     *
+     * @param integer $p_error_code
+     * @param string $p_error_string
+     */
+    function _check_parameters(&$p_params, $p_default)
+    {
 
     // ----- Check that param is an array
     if (!is_array($p_params)) {
@@ -3274,7 +3274,7 @@ class Archive_Zip
     }
 
     return(1);
-  }
+    }
   // ---------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------
@@ -3282,37 +3282,37 @@ class Archive_Zip
   // Description :
   // Parameters :
   // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_errorLog()
-  *
-  * { Description }
-  *
-  * @param integer $p_error_code
-  * @param string $p_error_string
-  */
-  function _errorLog($p_error_code=0, $p_error_string='')
-  {
+    /**
+     * Archive_Zip::_errorLog()
+     *
+     * { Description }
+     *
+     * @param integer $p_error_code
+     * @param string $p_error_string
+     */
+    function _errorLog($p_error_code=0, $p_error_string='')
+    {
       $this->_error_code = $p_error_code;
       $this->_error_string = $p_error_string;
-  }
+    }
   // ---------------------------------------------------------------------------
 
-  // ---------------------------------------------------------------------------
-  // Function : _errorReset()
-  // Description :
-  // Parameters :
-  // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_errorReset()
-  *
-  * { Description }
-  *
-  */
-  function _errorReset()
-  {
+    // ---------------------------------------------------------------------------
+    // Function : _errorReset()
+    // Description :
+    // Parameters :
+    // ---------------------------------------------------------------------------
+    /**
+     * Archive_Zip::_errorReset()
+     *
+     * { Description }
+     *
+     */
+    function _errorReset()
+    {
       $this->_error_code = 1;
       $this->_error_string = '';
-  }
+    }
   // ---------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------
@@ -3321,14 +3321,14 @@ class Archive_Zip
   // Parameters :
   // Return Values :
   // ---------------------------------------------------------------------------
-  /**
-  * _tool_PathReduction()
-  *
-  * { Description }
-  *
-  */
-  function _tool_PathReduction($p_dir)
-  {
+    /**
+     * _tool_PathReduction()
+     *
+     * { Description }
+     *
+     */
+    function _tool_PathReduction($p_dir)
+    {
     $v_result = "";
 
     // ----- Look for not empty path
@@ -3365,32 +3365,32 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
-  // ---------------------------------------------------------------------------
-  // Function : $this->_tool_PathInclusion()
-  // Description :
-  //   This function indicates if the path $p_path is under the $p_dir tree. Or,
-  //   said in an other way, if the file or sub-dir $p_path is inside the dir
-  //   $p_dir.
-  //   The function indicates also if the path is exactly the same as the dir.
-  //   This function supports path with duplicated '/' like '//', but does not
-  //   support '.' or '..' statements.
-  // Parameters :
-  // Return Values :
-  //   0 if $p_path is not inside directory $p_dir
-  //   1 if $p_path is inside directory $p_dir
-  //   2 if $p_path is exactly the same as $p_dir
-  // ---------------------------------------------------------------------------
-  /**
-  * _tool_PathInclusion()
-  *
-  * { Description }
-  *
-  */
-  function _tool_PathInclusion($p_dir, $p_path)
-  {
+    // ---------------------------------------------------------------------------
+    // Function : $this->_tool_PathInclusion()
+    // Description :
+    //   This function indicates if the path $p_path is under the $p_dir tree. Or,
+    //   said in an other way, if the file or sub-dir $p_path is inside the dir
+    //   $p_dir.
+    //   The function indicates also if the path is exactly the same as the dir.
+    //   This function supports path with duplicated '/' like '//', but does not
+    //   support '.' or '..' statements.
+    // Parameters :
+    // Return Values :
+    //   0 if $p_path is not inside directory $p_dir
+    //   1 if $p_path is inside directory $p_dir
+    //   2 if $p_path is exactly the same as $p_dir
+    // ---------------------------------------------------------------------------
+    /**
+     * _tool_PathInclusion()
+     *
+     * { Description }
+     *
+     */
+    function _tool_PathInclusion($p_dir, $p_path)
+    {
     $v_result = 1;
 
     // ----- Explode dir and path by directory separator
@@ -3444,29 +3444,29 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
+    }
   // ---------------------------------------------------------------------------
 
-  // ---------------------------------------------------------------------------
-  // Function : $this->_tool_CopyBlock()
-  // Description :
-  // Parameters :
-  //   $p_mode : read/write compression mode
-  //             0 : src & dest normal
-  //             1 : src gzip, dest normal
-  //             2 : src normal, dest gzip
-  //             3 : src & dest gzip
-  // Return Values :
-  // ---------------------------------------------------------------------------
-  /**
-  * _tool_CopyBlock()
-  *
-  * { Description }
-  *
-  * @param integer $p_mode
-  */
-  function _tool_CopyBlock($p_src, $p_dest, $p_size, $p_mode=0)
-  {
+    // ---------------------------------------------------------------------------
+    // Function : $this->_tool_CopyBlock()
+    // Description :
+    // Parameters :
+    //   $p_mode : read/write compression mode
+    //             0 : src & dest normal
+    //             1 : src gzip, dest normal
+    //             2 : src normal, dest gzip
+    //             3 : src & dest gzip
+    // Return Values :
+    // ---------------------------------------------------------------------------
+    /**
+     * _tool_CopyBlock()
+     *
+     * { Description }
+     *
+     * @param integer $p_mode
+     */
+    function _tool_CopyBlock($p_src, $p_dest, $p_size, $p_mode=0)
+    {
     $v_result = 1;
 
     if ($p_mode==0)
@@ -3516,29 +3516,29 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
-  // ---------------------------------------------------------------------------
+    }
+    // ---------------------------------------------------------------------------
 
-  // ---------------------------------------------------------------------------
-  // Function : $this->_tool_Rename()
-  // Description :
-  //   This function tries to do a simple rename() function. If it fails, it
-  //   tries to copy the $p_src file in a new $p_dest file and then unlink the
-  //   first one.
-  // Parameters :
-  //   $p_src : Old filename
-  //   $p_dest : New filename
-  // Return Values :
-  //   1 on success, 0 on failure.
-  // ---------------------------------------------------------------------------
-  /**
-  * _tool_Rename()
-  *
-  * { Description }
-  *
-  */
-  function _tool_Rename($p_src, $p_dest)
-  {
+    // ---------------------------------------------------------------------------
+    // Function : $this->_tool_Rename()
+    // Description :
+    //   This function tries to do a simple rename() function. If it fails, it
+    //   tries to copy the $p_src file in a new $p_dest file and then unlink the
+    //   first one.
+    // Parameters :
+    //   $p_src : Old filename
+    //   $p_dest : New filename
+    // Return Values :
+    //   1 on success, 0 on failure.
+    // ---------------------------------------------------------------------------
+    /**
+     * _tool_Rename()
+     *
+     * { Description }
+     *
+     */
+    function _tool_Rename($p_src, $p_dest)
+    {
     $v_result = 1;
 
     // ----- Try to rename the files
@@ -3555,29 +3555,29 @@ class Archive_Zip
 
     // ----- Return
     return $v_result;
-  }
-  // ---------------------------------------------------------------------------
+    }
+    // ---------------------------------------------------------------------------
 
-  // ---------------------------------------------------------------------------
-  // Function : $this->_tool_TranslateWinPath()
-  // Description :
-  //   Translate windows path by replacing '\' by '/' and optionally removing
-  //   drive letter.
-  // Parameters :
-  //   $p_path : path to translate.
-  //   $p_remove_disk_letter : true | false
-  // Return Values :
-  //   The path translated.
-  // ---------------------------------------------------------------------------
-  /**
-  * _tool_TranslateWinPath()
-  *
-  * { Description }
-  *
-  * @param [type] $p_remove_disk_letter
-  */
-  function _tool_TranslateWinPath($p_path, $p_remove_disk_letter=true)
-  {
+    // ---------------------------------------------------------------------------
+    // Function : $this->_tool_TranslateWinPath()
+    // Description :
+    //   Translate windows path by replacing '\' by '/' and optionally removing
+    //   drive letter.
+    // Parameters :
+    //   $p_path : path to translate.
+    //   $p_remove_disk_letter : true | false
+    // Return Values :
+    //   The path translated.
+    // ---------------------------------------------------------------------------
+    /**
+     * _tool_TranslateWinPath()
+     *
+     * { Description }
+     *
+     * @param [type] $p_remove_disk_letter
+     */
+    function _tool_TranslateWinPath($p_path, $p_remove_disk_letter=true)
+    {
     if (stristr(php_uname(), 'windows')) {
       // ----- Look for potential disk letter
       if (   ($p_remove_disk_letter)
@@ -3590,10 +3590,7 @@ class Archive_Zip
       }
     }
     return $p_path;
-  }
+    }
   // ---------------------------------------------------------------------------
 
-  }
-  // End of class
-
-?>
+}
