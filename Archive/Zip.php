@@ -804,143 +804,115 @@ class Archive_Zip
      *
      */
     function _create($p_list, &$p_result_list, &$p_params)
-  {
-    $v_result=1;
-    $v_list_detail = array();
-
-    $p_add_dir = $p_params['add_path'];
-    $p_remove_dir = $p_params['remove_path'];
-    $p_remove_all_dir = $p_params['remove_all_path'];
-
-    // ----- Open the file in write mode
-    if (($v_result = $this->_openFd('wb')) != 1)
     {
-      // ----- Return
-      return $v_result;
+        $v_result=1;
+        $v_list_detail = array();
+
+        $p_add_dir = $p_params['add_path'];
+        $p_remove_dir = $p_params['remove_path'];
+        $p_remove_all_dir = $p_params['remove_all_path'];
+
+        // ----- Open the file in write mode
+        if (($v_result = $this->_openFd('wb')) != 1)
+        {
+          // ----- Return
+          return $v_result;
+        }
+
+        // ----- Add the list of files
+        $v_result = $this->_addList($p_list, $p_result_list, $p_add_dir, $p_remove_dir, $p_remove_all_dir, $p_params);
+
+        // ----- Close
+        $this->_closeFd();
+
+        // ----- Return
+        return $v_result;
     }
+    // ---------------------------------------------------------------------------
 
-    // ----- Add the list of files
-    $v_result = $this->_addList($p_list, $p_result_list, $p_add_dir, $p_remove_dir, $p_remove_all_dir, $p_params);
-
-    // ----- Close
-    $this->_closeFd();
-
-    // ----- Return
-    return $v_result;
-  }
-  // ---------------------------------------------------------------------------
-
-  // ---------------------------------------------------------------------------
-  // Function : _add()
-  // Description :
-  // Parameters :
-  // Return Values :
-  // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_add()
-  *
-  * { Description }
-  *
-  */
-  function _add($p_list, &$p_result_list, &$p_params)
-  {
-    $v_result=1;
-    $v_list_detail = array();
-
-    $p_add_dir = $p_params['add_path'];
-    $p_remove_dir = $p_params['remove_path'];
-    $p_remove_all_dir = $p_params['remove_all_path'];
-
-    // ----- Look if the archive exists or is empty and need to be created
-    if ((!is_file($this->_zipname)) || (filesize($this->_zipname) == 0)) {
-      $v_result = $this->_create($p_list, $p_result_list, $p_params);
-      return $v_result;
-    }
-
-    // ----- Open the zip file
-    if (($v_result=$this->_openFd('rb')) != 1) {
-      return $v_result;
-    }
-
-    // ----- Read the central directory informations
-    $v_central_dir = array();
-    if (($v_result = $this->_readEndCentralDir($v_central_dir)) != 1)
+    // ---------------------------------------------------------------------------
+    // Function : _add()
+    // Description :
+    // Parameters :
+    // Return Values :
+    // ---------------------------------------------------------------------------
+    /**
+     * Archive_Zip::_add()
+     *
+     * { Description }
+     *
+     */
+    function _add($p_list, &$p_result_list, &$p_params)
     {
-      $this->_closeFd();
-      return $v_result;
-    }
+        $v_result=1;
+        $v_list_detail = array();
 
-    // ----- Go to beginning of File
-    @rewind($this->_zip_fd);
+        $p_add_dir = $p_params['add_path'];
+        $p_remove_dir = $p_params['remove_path'];
+        $p_remove_all_dir = $p_params['remove_all_path'];
 
-    // ----- Creates a temporay file
-    $v_zip_temp_name = ARCHIVE_ZIP_TEMPORARY_DIR.uniqid('archive_zip-').'.tmp';
+        // ----- Look if the archive exists or is empty and need to be created
+        if ((!is_file($this->_zipname)) || (filesize($this->_zipname) == 0)) {
+          $v_result = $this->_create($p_list, $p_result_list, $p_params);
+          return $v_result;
+        }
 
-    // ----- Open the temporary file in write mode
-    if (($v_zip_temp_fd = @fopen($v_zip_temp_name, 'wb')) == 0)
-    {
-      $this->_closeFd();
+        // ----- Open the zip file
+        if (($v_result=$this->_openFd('rb')) != 1) {
+          return $v_result;
+        }
 
-      $this->_errorLog(ARCHIVE_ZIP_ERR_READ_OPEN_FAIL,
-                       'Unable to open temporary file \''
-                       .$v_zip_temp_name.'\' in binary write mode');
-      return Archive_Zip::errorCode();
-    }
+        // ----- Read the central directory informations
+        $v_central_dir = array();
+        if (($v_result = $this->_readEndCentralDir($v_central_dir)) != 1)
+        {
+          $this->_closeFd();
+          return $v_result;
+        }
 
-    // ----- Copy the files from the archive to the temporary file
-    // TBC : Here I should better append the file and go back to erase the
-    // central dir
-    $v_size = $v_central_dir['offset'];
-    while ($v_size != 0)
-    {
-      $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
-                      ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
-      $v_buffer = fread($this->_zip_fd, $v_read_size);
-      @fwrite($v_zip_temp_fd, $v_buffer, $v_read_size);
-      $v_size -= $v_read_size;
-    }
+        // ----- Go to beginning of File
+        @rewind($this->_zip_fd);
 
-    // ----- Swap the file descriptor
-    // Here is a trick : I swap the temporary fd with the zip fd, in order to
-    // use the following methods on the temporary fil and not the real archive
-    $v_swap = $this->_zip_fd;
-    $this->_zip_fd = $v_zip_temp_fd;
-    $v_zip_temp_fd = $v_swap;
+        // ----- Creates a temporay file
+        $v_zip_temp_name = ARCHIVE_ZIP_TEMPORARY_DIR.uniqid('archive_zip-').'.tmp';
 
-    // ----- Add the files
-    $v_header_list = array();
-    if (($v_result = $this->_addFileList($p_list, $v_header_list,
-                                         $p_add_dir, $p_remove_dir,
-                                         $p_remove_all_dir, $p_params)) != 1)
-    {
-      fclose($v_zip_temp_fd);
-      $this->_closeFd();
-      @unlink($v_zip_temp_name);
+        // ----- Open the temporary file in write mode
+        if (($v_zip_temp_fd = @fopen($v_zip_temp_name, 'wb')) == 0)
+        {
+          $this->_closeFd();
 
-      // ----- Return
-      return $v_result;
-    }
+          $this->_errorLog(ARCHIVE_ZIP_ERR_READ_OPEN_FAIL,
+                           'Unable to open temporary file \''
+                           .$v_zip_temp_name.'\' in binary write mode');
+          return Archive_Zip::errorCode();
+        }
 
-    // ----- Store the offset of the central dir
-    $v_offset = @ftell($this->_zip_fd);
+        // ----- Copy the files from the archive to the temporary file
+        // TBC : Here I should better append the file and go back to erase the
+        // central dir
+        $v_size = $v_central_dir['offset'];
+        while ($v_size != 0)
+        {
+          $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
+                          ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+          $v_buffer = fread($this->_zip_fd, $v_read_size);
+          @fwrite($v_zip_temp_fd, $v_buffer, $v_read_size);
+          $v_size -= $v_read_size;
+        }
 
-    // ----- Copy the block of file headers from the old archive
-    $v_size = $v_central_dir['size'];
-    while ($v_size != 0)
-    {
-      $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
-                      ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
-      $v_buffer = @fread($v_zip_temp_fd, $v_read_size);
-      @fwrite($this->_zip_fd, $v_buffer, $v_read_size);
-      $v_size -= $v_read_size;
-    }
+        // ----- Swap the file descriptor
+        // Here is a trick : I swap the temporary fd with the zip fd, in order to
+        // use the following methods on the temporary fil and not the real archive
+        $v_swap = $this->_zip_fd;
+        $this->_zip_fd = $v_zip_temp_fd;
+        $v_zip_temp_fd = $v_swap;
 
-    // ----- Create the Central Dir files header
-    for ($i=0, $v_count=0; $i<sizeof($v_header_list); $i++)
-    {
-      // ----- Create the file header
-      if ($v_header_list[$i]['status'] == 'ok') {
-        if (($v_result=$this->_writeCentralFileHeader($v_header_list[$i]))!=1) {
+        // ----- Add the files
+        $v_header_list = array();
+        if (($v_result = $this->_addFileList($p_list, $v_header_list,
+                                             $p_add_dir, $p_remove_dir,
+                                             $p_remove_all_dir, $p_params)) != 1)
+        {
           fclose($v_zip_temp_fd);
           $this->_closeFd();
           @unlink($v_zip_temp_name);
@@ -948,91 +920,119 @@ class Archive_Zip
           // ----- Return
           return $v_result;
         }
-        $v_count++;
-      }
 
-      // ----- Transform the header to a 'usable' info
-      $this->_convertHeader2FileInfo($v_header_list[$i], $p_result_list[$i]);
+        // ----- Store the offset of the central dir
+        $v_offset = @ftell($this->_zip_fd);
+
+        // ----- Copy the block of file headers from the old archive
+        $v_size = $v_central_dir['size'];
+        while ($v_size != 0)
+        {
+          $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
+                          ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+          $v_buffer = @fread($v_zip_temp_fd, $v_read_size);
+          @fwrite($this->_zip_fd, $v_buffer, $v_read_size);
+          $v_size -= $v_read_size;
+        }
+
+        // ----- Create the Central Dir files header
+        for ($i=0, $v_count=0; $i<sizeof($v_header_list); $i++)
+        {
+          // ----- Create the file header
+          if ($v_header_list[$i]['status'] == 'ok') {
+            if (($v_result=$this->_writeCentralFileHeader($v_header_list[$i]))!=1) {
+              fclose($v_zip_temp_fd);
+              $this->_closeFd();
+              @unlink($v_zip_temp_name);
+
+              // ----- Return
+              return $v_result;
+            }
+            $v_count++;
+          }
+
+          // ----- Transform the header to a 'usable' info
+          $this->_convertHeader2FileInfo($v_header_list[$i], $p_result_list[$i]);
+        }
+
+        // ----- Zip file comment
+        $v_comment = '';
+
+        // ----- Calculate the size of the central header
+        $v_size = @ftell($this->_zip_fd)-$v_offset;
+
+        // ----- Create the central dir footer
+        if (($v_result = $this->_writeCentralHeader($v_count
+                                                      +$v_central_dir['entries'],
+                                                    $v_size, $v_offset,
+                                                    $v_comment)) != 1) {
+          // ----- Reset the file list
+          unset($v_header_list);
+
+          // ----- Return
+          return $v_result;
+        }
+
+        // ----- Swap back the file descriptor
+        $v_swap = $this->_zip_fd;
+        $this->_zip_fd = $v_zip_temp_fd;
+        $v_zip_temp_fd = $v_swap;
+
+        // ----- Close
+        $this->_closeFd();
+
+        // ----- Close the temporary file
+        @fclose($v_zip_temp_fd);
+
+        // ----- Delete the zip file
+        // TBC : I should test the result ...
+        @unlink($this->_zipname);
+
+        // ----- Rename the temporary file
+        // TBC : I should test the result ...
+        //@rename($v_zip_temp_name, $this->_zipname);
+        $this->_tool_Rename($v_zip_temp_name, $this->_zipname);
+
+        // ----- Return
+        return $v_result;
     }
+    // ---------------------------------------------------------------------------
 
-    // ----- Zip file comment
-    $v_comment = '';
-
-    // ----- Calculate the size of the central header
-    $v_size = @ftell($this->_zip_fd)-$v_offset;
-
-    // ----- Create the central dir footer
-    if (($v_result = $this->_writeCentralHeader($v_count
-                                                  +$v_central_dir['entries'],
-                                                $v_size, $v_offset,
-                                                $v_comment)) != 1) {
-      // ----- Reset the file list
-      unset($v_header_list);
-
-      // ----- Return
-      return $v_result;
-    }
-
-    // ----- Swap back the file descriptor
-    $v_swap = $this->_zip_fd;
-    $this->_zip_fd = $v_zip_temp_fd;
-    $v_zip_temp_fd = $v_swap;
-
-    // ----- Close
-    $this->_closeFd();
-
-    // ----- Close the temporary file
-    @fclose($v_zip_temp_fd);
-
-    // ----- Delete the zip file
-    // TBC : I should test the result ...
-    @unlink($this->_zipname);
-
-    // ----- Rename the temporary file
-    // TBC : I should test the result ...
-    //@rename($v_zip_temp_name, $this->_zipname);
-    $this->_tool_Rename($v_zip_temp_name, $this->_zipname);
-
-    // ----- Return
-    return $v_result;
-  }
-  // ---------------------------------------------------------------------------
-
-  // ---------------------------------------------------------------------------
-  // Function : _openFd()
-  // Description :
-  // Parameters :
-  // ---------------------------------------------------------------------------
-  /**
-  * Archive_Zip::_openFd()
-  *
-  * { Description }
-  *
-  */
-  function _openFd($p_mode)
-  {
-    $v_result=1;
-
-    // ----- Look if already open
-    if ($this->_zip_fd != 0)
+    // ---------------------------------------------------------------------------
+    // Function : _openFd()
+    // Description :
+    // Parameters :
+    // ---------------------------------------------------------------------------
+    /**
+     * Archive_Zip::_openFd()
+     *
+     * { Description }
+     *
+     */
+    function _openFd($p_mode)
     {
-      $this->_errorLog(ARCHIVE_ZIP_ERR_READ_OPEN_FAIL,
-                       'Zip file \''.$this->_zipname.'\' already open');
-      return Archive_Zip::errorCode();
-    }
+        $v_result=1;
 
-    // ----- Open the zip file
-    if (($this->_zip_fd = @fopen($this->_zipname, $p_mode)) == 0)
-    {
-      $this->_errorLog(ARCHIVE_ZIP_ERR_READ_OPEN_FAIL,
-                       'Unable to open archive \''.$this->_zipname
-                       .'\' in '.$p_mode.' mode');
-      return Archive_Zip::errorCode();
-    }
+        // ----- Look if already open
+        if ($this->_zip_fd != 0)
+        {
+          $this->_errorLog(ARCHIVE_ZIP_ERR_READ_OPEN_FAIL,
+                           'Zip file \''.$this->_zipname.'\' already open');
+          return Archive_Zip::errorCode();
+        }
 
-    // ----- Return
-    return $v_result;
-  }
+        // ----- Open the zip file
+        if (($this->_zip_fd = @fopen($this->_zipname, $p_mode)) == 0)
+        {
+          $this->_errorLog(ARCHIVE_ZIP_ERR_READ_OPEN_FAIL,
+                           'Unable to open archive \''.$this->_zipname
+                           .'\' in '.$p_mode.' mode');
+          return Archive_Zip::errorCode();
+        }
+
+        // ----- Return
+        return $v_result;
+    }
   // ---------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------
