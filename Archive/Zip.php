@@ -656,15 +656,14 @@ class Archive_Zip
 
         // ----- Extract error constants from all const.
         for (reset($v_const_list);
-             list($v_key, $v_value) = each($v_const_list);) {
-             if (substr($v_key, 0, strlen('ARCHIVE_ZIP_ERR_'))
-                =='ARCHIVE_ZIP_ERR_') {
+            list($v_key, $v_value) = each($v_const_list);) {
+            if (substr($v_key, 0, strlen('ARCHIVE_ZIP_ERR_')) =='ARCHIVE_ZIP_ERR_') {
                 $v_error_list[$v_key] = $v_value;
             }
         }
 
         // ----- Search the name form the code value
-        $v_key=array_search($this->_error_code, $v_error_list, true);
+        $v_key = array_search($this->_error_code, $v_error_list, true);
         if ($v_key!=false) {
             $v_value = $v_key;
         } else {
@@ -1064,16 +1063,16 @@ class Archive_Zip
 
         // ----- Create the Central Dir files header
         for ($i=0, $v_count=0; $i<sizeof($v_header_list); $i++) {
-          // ----- Create the file header
-          if ($v_header_list[$i]['status'] == 'ok') {
-            if (($v_result = $this->_writeCentralFileHeader($v_header_list[$i])) != 1) {
-              return $v_result;
+            // ----- Create the file header
+            if ($v_header_list[$i]['status'] == 'ok') {
+                if (($v_result = $this->_writeCentralFileHeader($v_header_list[$i])) != 1) {
+                    return $v_result;
+                }
+                $v_count++;
             }
-            $v_count++;
-          }
 
-          // ----- Transform the header to a 'usable' info
-          $this->_convertHeader2FileInfo($v_header_list[$i], $p_result_list[$i]);
+            // ----- Transform the header to a 'usable' info
+            $this->_convertHeader2FileInfo($v_header_list[$i], $p_result_list[$i]);
         }
 
         // ----- Zip file comment
@@ -1085,11 +1084,11 @@ class Archive_Zip
         // ----- Create the central dir footer
         if (($v_result = $this->_writeCentralHeader($v_count, $v_size, $v_offset,
                                                     $v_comment)) != 1) {
-          // ----- Reset the file list
-          unset($v_header_list);
+            // ----- Reset the file list
+            unset($v_header_list);
 
-          // ----- Return
-          return $v_result;
+            // ----- Return
+            return $v_result;
         }
 
 
@@ -1123,89 +1122,83 @@ class Archive_Zip
         $v_result = 1;
         $v_header = array();
 
-    // ----- Recuperate the current number of elt in list
+        // ----- Recuperate the current number of elt in list
         $v_nb = sizeof($p_result_list);
 
-    // ----- Loop on the files
-    for ($j=0; ($j<count($p_list)) && ($v_result==1); $j++)
-    {
-        // ----- Recuperate the filename
-        $p_filename = $this->_tool_TranslateWinPath($p_list[$j], false);
+        // ----- Loop on the files
+        for ($j=0; ($j<count($p_list)) && ($v_result==1); $j++) {
+            // ----- Recuperate the filename
+            $p_filename = $this->_tool_TranslateWinPath($p_list[$j], false);
 
-        // ----- Skip empty file names
-        if ($p_filename == "") {
-        continue;
-      }
-
-        // ----- Check the filename
-        if (!file_exists($p_filename)) {
-        $this->_errorLog(ARCHIVE_ZIP_ERR_MISSING_FILE,
-                         "File '$p_filename' does not exists");
-        return Archive_Zip::errorCode();
-      }
-
-        // ----- Look if it is a file or a dir with no all pathnre move
-        if ((is_file($p_filename)) || ((is_dir($p_filename)) && !$p_remove_all_dir)) {
-        // ----- Add the file
-        if (($v_result = $this->_addFile($p_filename, $v_header, $p_add_dir, $p_remove_dir, $p_remove_all_dir, $p_params)) != 1) {
-          // ----- Return status
-          return $v_result;
-        }
-
-        // ----- Store the file infos
-        $p_result_list[$v_nb++] = $v_header;
-      }
-
-        // ----- Look for directory
-        if (is_dir($p_filename)) {
-
-        // ----- Look for path
-        if ($p_filename != ".") {
-          $v_path = $p_filename."/";
-        } else {
-          $v_path = "";
-        }
-
-        // ----- Read the directory for files and sub-directories
-        $p_hdir = opendir($p_filename);
-        $p_hitem = readdir($p_hdir); // '.' directory
-        $p_hitem = readdir($p_hdir); // '..' directory
-        while ($p_hitem = readdir($p_hdir)) {
-
-          // ----- Look for a file
-          if (is_file($v_path.$p_hitem))
-          {
-
-            // ----- Add the file
-            if (($v_result = $this->_addFile($v_path.$p_hitem, $v_header, $p_add_dir, $p_remove_dir, $p_remove_all_dir, $p_params)) != 1)
-            {
-              // ----- Return status
-              return $v_result;
+            // ----- Skip empty file names
+            if ($p_filename == "") {
+                continue;
             }
 
-            // ----- Store the file infos
-            $p_result_list[$v_nb++] = $v_header;
-          }
+            // ----- Check the filename
+            if (!file_exists($p_filename)) {
+                $this->_errorLog(ARCHIVE_ZIP_ERR_MISSING_FILE,
+                                 "File '$p_filename' does not exists");
+                return Archive_Zip::errorCode();
+            }
 
-          // ----- Recursive call to _addFileList()
-          else
-          {
+            // ----- Look if it is a file or a dir with no all pathnre move
+            if ((is_file($p_filename)) || ((is_dir($p_filename)) && !$p_remove_all_dir)) {
+                // ----- Add the file
+                if (($v_result = $this->_addFile($p_filename, $v_header, $p_add_dir, $p_remove_dir, $p_remove_all_dir, $p_params)) != 1) {
+                    // ----- Return status
+                    return $v_result;
+                }
 
-            // ----- Need an array as parameter
-            $p_temp_list[0] = $v_path.$p_hitem;
-            $v_result = $this->_addFileList($p_temp_list, $p_result_list, $p_add_dir, $p_remove_dir, $p_remove_all_dir, $p_params);
+                // ----- Store the file infos
+                $p_result_list[$v_nb++] = $v_header;
+            }
 
-            // ----- Update the number of elements of the list
-            $v_nb = sizeof($p_result_list);
-          }
+            // ----- Look for directory
+            if (is_dir($p_filename)) {
+
+                // ----- Look for path
+                if ($p_filename != ".") {
+                    $v_path = $p_filename."/";
+                } else {
+                    $v_path = "";
+                }
+
+                // ----- Read the directory for files and sub-directories
+                $p_hdir  = opendir($p_filename);
+                $p_hitem = readdir($p_hdir); // '.' directory
+                $p_hitem = readdir($p_hdir); // '..' directory
+
+                while ($p_hitem = readdir($p_hdir)) {
+
+                    // ----- Look for a file
+                    if (is_file($v_path.$p_hitem)) {
+
+                        // ----- Add the file
+                        if (($v_result = $this->_addFile($v_path.$p_hitem, $v_header, $p_add_dir, $p_remove_dir, $p_remove_all_dir, $p_params)) != 1) {
+                            // ----- Return status
+                            return $v_result;
+                        }
+
+                        // ----- Store the file infos
+                        $p_result_list[$v_nb++] = $v_header;
+                    } else {
+                        // ----- Recursive call to _addFileList()
+                        // ----- Need an array as parameter
+                        $p_temp_list[0] = $v_path.$p_hitem;
+                        $v_result = $this->_addFileList($p_temp_list, $p_result_list, $p_add_dir, $p_remove_dir, $p_remove_all_dir, $p_params);
+
+                        // ----- Update the number of elements of the list
+                        $v_nb = sizeof($p_result_list);
+                    }
+                }
+
+                // ----- Free memory for the recursive loop
+                unset($p_temp_list);
+                unset($p_hdir);
+                unset($p_hitem);
+            }
         }
-
-        // ----- Free memory for the recursive loop
-        unset($p_temp_list);
-        unset($p_hdir);
-        unset($p_hitem);
-      }
-    }
 
         return $v_result;
     }
@@ -1762,7 +1755,7 @@ class Archive_Zip
         $j_start = 0;
     for ($i=0, $v_nb_extracted=0; $i<$v_central_dir['entries']; $i++) {
         // ----- Read next Central dir entry
-      @rewind($this->_zip_fd);
+        @rewind($this->_zip_fd);
         if (@fseek($this->_zip_fd, $v_pos_entry)) {
         $this->_closeFd();
 
@@ -2485,7 +2478,7 @@ class Archive_Zip
     // in this case the end of central dir is at 22 bytes of the file end
         $v_found = 0;
         if ($v_size > 26) {
-      @fseek($this->_zip_fd, $v_size-22);
+        @fseek($this->_zip_fd, $v_size-22);
         if (($v_pos = @ftell($this->_zip_fd)) != ($v_size-22)) {
         $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT,
                          'Unable to seek back to the middle of the archive \''
@@ -2510,7 +2503,7 @@ class Archive_Zip
         $v_maximum_size = 65557; // 0xFFFF + 22;
         if ($v_maximum_size > $v_size)
         $v_maximum_size = $v_size;
-      @fseek($this->_zip_fd, $v_size-$v_maximum_size);
+        @fseek($this->_zip_fd, $v_size-$v_maximum_size);
         if (@ftell($this->_zip_fd) != ($v_size-$v_maximum_size)) {
         $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT,
                          'Unable to seek back to the middle of the archive \''
@@ -2946,164 +2939,164 @@ class Archive_Zip
     {
         $v_result = 1;
 
-    // ----- Look if the archive_to_add exists
+        // ----- Look if the archive_to_add exists
         if (!is_file($p_archive_to_add->_zipname)) {
-        // ----- Nothing to merge, so merge is a success
-      return 1;
-    }
+            // ----- Nothing to merge, so merge is a success
+            return 1;
+        }
 
-    // ----- Look if the archive exists
+        // ----- Look if the archive exists
         if (!is_file($this->_zipname)) {
-        // ----- Do a duplicate
-        $v_result = $this->_duplicate($p_archive_to_add->_zipname);
+            // ----- Do a duplicate
+            $v_result = $this->_duplicate($p_archive_to_add->_zipname);
 
-      return $v_result;
-    }
+            return $v_result;
+        }
 
-    // ----- Open the zip file
+        // ----- Open the zip file
         if (($v_result=$this->_openFd('rb')) != 1) {
-      return $v_result;
-    }
+            return $v_result;
+        }
 
-    // ----- Read the central directory informations
+        // ----- Read the central directory informations
         $v_central_dir = array();
         if (($v_result = $this->_readEndCentralDir($v_central_dir)) != 1) {
-        $this->_closeFd();
-      return $v_result;
-    }
+            $this->_closeFd();
+            return $v_result;
+        }
 
-    // ----- Go to beginning of File
-    @rewind($this->_zip_fd);
+        // ----- Go to beginning of File
+        @rewind($this->_zip_fd);
 
-    // ----- Open the archive_to_add file
+        // ----- Open the archive_to_add file
         if (($v_result=$p_archive_to_add->_openFd('rb')) != 1) {
-        $this->_closeFd();
-      return $v_result;
-    }
+            $this->_closeFd();
+            return $v_result;
+        }
 
-    // ----- Read the central directory informations
+        // ----- Read the central directory informations
         $v_central_dir_to_add = array();
         $v_result = $p_archive_to_add->_readEndCentralDir($v_central_dir_to_add);
         if ($v_result != 1) {
-        $this->_closeFd();
-        $p_archive_to_add->_closeFd();
-      return $v_result;
-    }
+            $this->_closeFd();
+            $p_archive_to_add->_closeFd();
+            return $v_result;
+        }
 
-    // ----- Go to beginning of File
-    @rewind($p_archive_to_add->_zip_fd);
+        // ----- Go to beginning of File
+        @rewind($p_archive_to_add->_zip_fd);
 
-    // ----- Creates a temporay file
+        // ----- Creates a temporay file
         $v_zip_temp_name = ARCHIVE_ZIP_TEMPORARY_DIR.uniqid('archive_zip-').'.tmp';
 
-    // ----- Open the temporary file in write mode
+        // ----- Open the temporary file in write mode
         if (($v_zip_temp_fd = @fopen($v_zip_temp_name, 'wb')) == 0) {
-        $this->_closeFd();
-        $p_archive_to_add->_closeFd();
-        $this->_errorLog(ARCHIVE_ZIP_ERR_READ_OPEN_FAIL,
-                       'Unable to open temporary file \''
-                       .$v_zip_temp_name.'\' in binary write mode');
-      return Archive_Zip::errorCode();
-    }
+            $this->_closeFd();
+            $p_archive_to_add->_closeFd();
+            $this->_errorLog(ARCHIVE_ZIP_ERR_READ_OPEN_FAIL,
+                           'Unable to open temporary file \''
+                           .$v_zip_temp_name.'\' in binary write mode');
+            return Archive_Zip::errorCode();
+        }
 
-    // ----- Copy the files from the archive to the temporary file
-    // TBC : Here I should better append the file and go back to erase the
-    // central dir
+        // ----- Copy the files from the archive to the temporary file
+        // TBC : Here I should better append the file and go back to erase the
+        // central dir
         $v_size = $v_central_dir['offset'];
-    while ($v_size != 0) {
-        $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
-                      ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
-        $v_buffer = fread($this->_zip_fd, $v_read_size);
-      @fwrite($v_zip_temp_fd, $v_buffer, $v_read_size);
-        $v_size -= $v_read_size;
-    }
+        while ($v_size != 0) {
+            $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
+                          ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+            $v_buffer = fread($this->_zip_fd, $v_read_size);
+            @fwrite($v_zip_temp_fd, $v_buffer, $v_read_size);
+            $v_size -= $v_read_size;
+        }
 
-    // ----- Copy the files from the archive_to_add into the temporary file
+        // ----- Copy the files from the archive_to_add into the temporary file
         $v_size = $v_central_dir_to_add['offset'];
-    while ($v_size != 0) {
-        $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
-                      ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
-        $v_buffer = fread($p_archive_to_add->_zip_fd, $v_read_size);
-      @fwrite($v_zip_temp_fd, $v_buffer, $v_read_size);
-        $v_size -= $v_read_size;
-    }
+        while ($v_size != 0) {
+            $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
+                          ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+            $v_buffer = fread($p_archive_to_add->_zip_fd, $v_read_size);
+            @fwrite($v_zip_temp_fd, $v_buffer, $v_read_size);
+            $v_size -= $v_read_size;
+        }
 
-    // ----- Store the offset of the central dir
+        // ----- Store the offset of the central dir
         $v_offset = @ftell($v_zip_temp_fd);
 
-    // ----- Copy the block of file headers from the old archive
+        // ----- Copy the block of file headers from the old archive
         $v_size = $v_central_dir['size'];
-    while ($v_size != 0) {
-        $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
-                      ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
-        $v_buffer = @fread($this->_zip_fd, $v_read_size);
-      @fwrite($v_zip_temp_fd, $v_buffer, $v_read_size);
-        $v_size -= $v_read_size;
-    }
+        while ($v_size != 0) {
+            $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
+                          ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+            $v_buffer = @fread($this->_zip_fd, $v_read_size);
+            @fwrite($v_zip_temp_fd, $v_buffer, $v_read_size);
+            $v_size -= $v_read_size;
+        }
 
-    // ----- Copy the block of file headers from the archive_to_add
+        // ----- Copy the block of file headers from the archive_to_add
         $v_size = $v_central_dir_to_add['size'];
-    while ($v_size != 0) {
-        $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
-                      ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
-        $v_buffer = @fread($p_archive_to_add->_zip_fd, $v_read_size);
-      @fwrite($v_zip_temp_fd, $v_buffer, $v_read_size);
-        $v_size -= $v_read_size;
-    }
+        while ($v_size != 0) {
+            $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
+                          ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+            $v_buffer = @fread($p_archive_to_add->_zip_fd, $v_read_size);
+            @fwrite($v_zip_temp_fd, $v_buffer, $v_read_size);
+            $v_size -= $v_read_size;
+        }
 
-    // ----- Zip file comment
-    // TBC : I should merge the two comments
+        // ----- Zip file comment
+        // TBC : I should merge the two comments
         $v_comment = '';
 
-    // ----- Calculate the size of the (new) central header
+        // ----- Calculate the size of the (new) central header
         $v_size = @ftell($v_zip_temp_fd)-$v_offset;
 
-    // ----- Swap the file descriptor
-    // Here is a trick : I swap the temporary fd with the zip fd, in order to use
-    // the following methods on the temporary fil and not the real archive fd
+        // ----- Swap the file descriptor
+        // Here is a trick : I swap the temporary fd with the zip fd, in order to use
+        // the following methods on the temporary fil and not the real archive fd
         $v_swap = $this->_zip_fd;
         $this->_zip_fd = $v_zip_temp_fd;
         $v_zip_temp_fd = $v_swap;
 
-    // ----- Create the central dir footer
+        // ----- Create the central dir footer
         if (($v_result = $this->_writeCentralHeader($v_central_dir['entries']
                                               +$v_central_dir_to_add['entries'],
                                                 $v_size, $v_offset,
                                                 $v_comment)) != 1) {
-        $this->_closeFd();
-        $p_archive_to_add->_closeFd();
-      @fclose($v_zip_temp_fd);
-        $this->_zip_fd = null;
+            $this->_closeFd();
+            $p_archive_to_add->_closeFd();
+            @fclose($v_zip_temp_fd);
+            $this->_zip_fd = null;
 
-        // ----- Reset the file list
-      unset($v_header_list);
+            // ----- Reset the file list
+            unset($v_header_list);
 
 
-      return $v_result;
-    }
+            return $v_result;
+        }
 
-    // ----- Swap back the file descriptor
+        // ----- Swap back the file descriptor
         $v_swap = $this->_zip_fd;
         $this->_zip_fd = $v_zip_temp_fd;
         $v_zip_temp_fd = $v_swap;
 
-    // ----- Close
+        // ----- Close
         $this->_closeFd();
         $p_archive_to_add->_closeFd();
 
-    // ----- Close the temporary file
-    @fclose($v_zip_temp_fd);
+        // ----- Close the temporary file
+        @fclose($v_zip_temp_fd);
 
-    // ----- Delete the zip file
-    // TBC : I should test the result ...
-    @unlink($this->_zipname);
+        // ----- Delete the zip file
+        // TBC : I should test the result ...
+        @unlink($this->_zipname);
 
-    // ----- Rename the temporary file
-    // TBC : I should test the result ...
-    //@rename($v_zip_temp_name, $this->_zipname);
+        // ----- Rename the temporary file
+        // TBC : I should test the result ...
+        //@rename($v_zip_temp_name, $this->_zipname);
         $this->_tool_Rename($v_zip_temp_name, $this->_zipname);
 
-    // ----- Return
+        // ----- Return
         return $v_result;
     }
     // ---------------------------------------------------------------------------
@@ -3124,48 +3117,47 @@ class Archive_Zip
     {
         $v_result = 1;
 
-    // ----- Look if the $p_archive_filename exists
+        // ----- Look if the $p_archive_filename exists
         if (!is_file($p_archive_filename)) {
 
-        // ----- Nothing to duplicate, so duplicate is a success.
-        $v_result = 1;
+            // ----- Nothing to duplicate, so duplicate is a success.
+            $v_result = 1;
 
+            return $v_result;
+        }
 
-      return $v_result;
-    }
-
-    // ----- Open the zip file
+        // ----- Open the zip file
         if (($v_result=$this->_openFd('wb')) != 1) {
 
-      return $v_result;
-    }
+            return $v_result;
+        }
 
-    // ----- Open the temporary file in write mode
+        // ----- Open the temporary file in write mode
         if (($v_zip_temp_fd = @fopen($p_archive_filename, 'rb')) == 0) {
-        $this->_closeFd();
-        $this->_errorLog(ARCHIVE_ZIP_ERR_READ_OPEN_FAIL,
+            $this->_closeFd();
+            $this->_errorLog(ARCHIVE_ZIP_ERR_READ_OPEN_FAIL,
                        'Unable to open archive file \''
                        .$p_archive_filename.'\' in binary write mode');
-      return Archive_Zip::errorCode();
-    }
+            return Archive_Zip::errorCode();
+        }
 
-    // ----- Copy the files from the archive to the temporary file
-    // TBC : Here I should better append the file and go back to erase the
-    // central dir
+        // ----- Copy the files from the archive to the temporary file
+        // TBC : Here I should better append the file and go back to erase the
+        // central dir
         $v_size = filesize($p_archive_filename);
-    while ($v_size != 0) {
-        $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
-                      ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
-        $v_buffer = fread($v_zip_temp_fd, $v_read_size);
-      @fwrite($this->_zip_fd, $v_buffer, $v_read_size);
-        $v_size -= $v_read_size;
-    }
+        while ($v_size != 0) {
+            $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
+                          ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+            $v_buffer = fread($v_zip_temp_fd, $v_read_size);
+            @fwrite($this->_zip_fd, $v_buffer, $v_read_size);
+            $v_size -= $v_read_size;
+        }
 
-    // ----- Close
+        // ----- Close
         $this->_closeFd();
 
-    // ----- Close the temporary file
-    @fclose($v_zip_temp_fd);
+        // ----- Close the temporary file
+        @fclose($v_zip_temp_fd);
 
         return $v_result;
     }
@@ -3182,45 +3174,45 @@ class Archive_Zip
     function _check_parameters(&$p_params, $p_default)
     {
 
-    // ----- Check that param is an array
+        // ----- Check that param is an array
         if (!is_array($p_params)) {
-        $this->_errorLog(ARCHIVE_ZIP_ERR_INVALID_PARAMETER,
-                         'Unsupported parameter, waiting for an array');
-        return Archive_Zip::errorCode();
-    }
-
-    // ----- Check that all the params are valid
-    for (reset($p_params); list($v_key, $v_value) = each($p_params); ) {
-        if (!isset($p_default[$v_key])) {
             $this->_errorLog(ARCHIVE_ZIP_ERR_INVALID_PARAMETER,
-                             'Unsupported parameter with key \''.$v_key.'\'');
-
+                             'Unsupported parameter, waiting for an array');
             return Archive_Zip::errorCode();
         }
-    }
 
-    // ----- Set the default values
-    for (reset($p_default); list($v_key, $v_value) = each($p_default); ) {
-        if (!isset($p_params[$v_key])) {
-            $p_params[$v_key] = $p_default[$v_key];
-        }
-    }
+        // ----- Check that all the params are valid
+        for (reset($p_params); list($v_key, $v_value) = each($p_params); ) {
+            if (!isset($p_default[$v_key])) {
+                $this->_errorLog(ARCHIVE_ZIP_ERR_INVALID_PARAMETER,
+                                 'Unsupported parameter with key \''.$v_key.'\'');
 
-    // ----- Check specific parameters
-        $v_callback_list = array ('callback_pre_add','callback_post_add',
-                              'callback_pre_extract','callback_post_extract');
-    for ($i=0; $i<sizeof($v_callback_list); $i++) {
-        $v_key=$v_callback_list[$i];
-        if (   (isset($p_params[$v_key])) && ($p_params[$v_key] != '')) {
-            if (!function_exists($p_params[$v_key])) {
-                $this->_errorLog(ARCHIVE_ZIP_ERR_INVALID_PARAM_VALUE,
-                                 "Callback '".$p_params[$v_key]
-                                 ."()' is not an existing function for "
-                                 ."parameter '".$v_key."'");
                 return Archive_Zip::errorCode();
             }
         }
-    }
+
+        // ----- Set the default values
+        for (reset($p_default); list($v_key, $v_value) = each($p_default); ) {
+            if (!isset($p_params[$v_key])) {
+                $p_params[$v_key] = $p_default[$v_key];
+            }
+        }
+
+        // ----- Check specific parameters
+            $v_callback_list = array ('callback_pre_add','callback_post_add',
+                                  'callback_pre_extract','callback_post_extract');
+        for ($i=0; $i<sizeof($v_callback_list); $i++) {
+            $v_key=$v_callback_list[$i];
+            if ((isset($p_params[$v_key])) && ($p_params[$v_key] != '')) {
+                if (!function_exists($p_params[$v_key])) {
+                    $this->_errorLog(ARCHIVE_ZIP_ERR_INVALID_PARAM_VALUE,
+                                     "Callback '".$p_params[$v_key]
+                                     ."()' is not an existing function for "
+                                     ."parameter '".$v_key."'");
+                    return Archive_Zip::errorCode();
+                }
+            }
+        }
 
         return(1);
     }
@@ -3241,7 +3233,7 @@ class Archive_Zip
      */
     function _errorLog($p_error_code=0, $p_error_string='')
     {
-        $this->_error_code = $p_error_code;
+        $this->_error_code   = $p_error_code;
         $this->_error_string = $p_error_string;
     }
     // ---------------------------------------------------------------------------
@@ -3281,8 +3273,7 @@ class Archive_Zip
         $v_result = "";
 
         // ----- Look for not empty path
-        if ($p_dir != "")
-        {
+        if ($p_dir != "") {
             // ----- Explode path by directory names
             $v_list = explode("/", $p_dir);
 
@@ -3290,16 +3281,16 @@ class Archive_Zip
             for ($i=sizeof($v_list)-1; $i>=0; $i--) {
                 // ----- Look for current path
                 if ($v_list[$i] == ".") {
-                  // ----- Ignore this directory
-                  // Should be the first $i=0, but no check is done
+                    // ----- Ignore this directory
+                    // Should be the first $i=0, but no check is done
                 } else if ($v_list[$i] == "..") {
-                  // ----- Ignore it and ignore the $i-1
-                  $i--;
+                    // ----- Ignore it and ignore the $i-1
+                    $i--;
                 } else if (($v_list[$i] == "") && ($i!=(sizeof($v_list)-1)) && ($i!=0)) {
-                  // ----- Ignore only the double '//' in path,
-                  // but not the first and last '/'
+                    // ----- Ignore only the double '//' in path,
+                    // but not the first and last '/'
                 } else {
-                  $v_result = $v_list[$i].($i!=(sizeof($v_list)-1)?"/".$v_result:"");
+                    $v_result = $v_list[$i].($i!=(sizeof($v_list)-1)?"/".$v_result:"");
                 }
             }
         }
