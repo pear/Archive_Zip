@@ -2383,107 +2383,110 @@ class Archive_Zip
     {
         $v_result = 1;
 
-    // ----- Go to the end of the zip file
+        // ----- Go to the end of the zip file
         $v_size = filesize($this->_zipname);
-    @fseek($this->_zip_fd, $v_size);
+        @fseek($this->_zip_fd, $v_size);
+
         if (@ftell($this->_zip_fd) != $v_size) {
-        $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT,
-                       'Unable to go to the end of the archive \''
-                       .$this->_zipname.'\'');
-      return Archive_Zip::errorCode();
-    }
-
-    // ----- First try : look if this is an archive with no commentaries
-    // (most of the time)
-    // in this case the end of central dir is at 22 bytes of the file end
-        $v_found = 0;
-        if ($v_size > 26) {
-        @fseek($this->_zip_fd, $v_size-22);
-        if (($v_pos = @ftell($this->_zip_fd)) != ($v_size-22)) {
-        $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT,
-                         'Unable to seek back to the middle of the archive \''
-                         .$this->_zipname.'\'');
-        return Archive_Zip::errorCode();
-      }
-
-        // ----- Read for bytes
-        $v_binary_data = @fread($this->_zip_fd, 4);
-        $v_data = unpack('Vid', $v_binary_data);
-
-        // ----- Check signature
-        if ($v_data['id'] == 0x06054b50) {
-        $v_found = 1;
-      }
-
-        $v_pos = ftell($this->_zip_fd);
-    }
-
-    // ----- Go back to the maximum possible size of the Central Dir End Record
-        if (!$v_found) {
-        $v_maximum_size = 65557; // 0xFFFF + 22;
-        if ($v_maximum_size > $v_size)
-        $v_maximum_size = $v_size;
-        @fseek($this->_zip_fd, $v_size-$v_maximum_size);
-        if (@ftell($this->_zip_fd) != ($v_size-$v_maximum_size)) {
-        $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT,
-                         'Unable to seek back to the middle of the archive \''
-                         .$this->_zipname.'\'');
-        return Archive_Zip::errorCode();
-      }
-
-        // ----- Read byte per byte in order to find the signature
-        $v_pos = ftell($this->_zip_fd);
-        $v_bytes = 0x00000000;
-      while ($v_pos < $v_size) {
-        // ----- Read a byte
-        $v_byte = @fread($this->_zip_fd, 1);
-
-        // -----  Add the byte
-        $v_bytes = ($v_bytes << 8) | Ord($v_byte);
-
-        // ----- Compare the bytes
-        if ($v_bytes == 0x504b0506) {
-          $v_pos++;
-          break;
+            $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT,
+                           'Unable to go to the end of the archive \''
+                           .$this->_zipname.'\'');
+            return Archive_Zip::errorCode();
         }
 
-        $v_pos++;
-      }
+        // ----- First try : look if this is an archive with no commentaries
+        // (most of the time)
+        // in this case the end of central dir is at 22 bytes of the file end
+        $v_found = 0;
+        if ($v_size > 26) {
+            @fseek($this->_zip_fd, $v_size-22);
 
-        // ----- Look if not found end of central dir
-        if ($v_pos == $v_size) {
-        $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT,
-                         "Unable to find End of Central Dir Record signature");
-        return Archive_Zip::errorCode();
-      }
-    }
+            if (($v_pos = @ftell($this->_zip_fd)) != ($v_size-22)) {
+                $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT,
+                                 'Unable to seek back to the middle of the archive \''
+                                 .$this->_zipname.'\'');
+                return Archive_Zip::errorCode();
+            }
 
-    // ----- Read the first 18 bytes of the header
+            // ----- Read for bytes
+            $v_binary_data = @fread($this->_zip_fd, 4);
+            $v_data = unpack('Vid', $v_binary_data);
+
+            // ----- Check signature
+            if ($v_data['id'] == 0x06054b50) {
+                $v_found = 1;
+            }
+
+            $v_pos = ftell($this->_zip_fd);
+        }
+
+        // ----- Go back to the maximum possible size of the Central Dir End Record
+        if (!$v_found) {
+            $v_maximum_size = 65557; // 0xFFFF + 22;
+            if ($v_maximum_size > $v_size)
+            $v_maximum_size = $v_size;
+            @fseek($this->_zip_fd, $v_size-$v_maximum_size);
+            if (@ftell($this->_zip_fd) != ($v_size-$v_maximum_size)) {
+                $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT,
+                                 'Unable to seek back to the middle of the archive \''
+                                 .$this->_zipname.'\'');
+                return Archive_Zip::errorCode();
+            }
+
+            // ----- Read byte per byte in order to find the signature
+            $v_pos = ftell($this->_zip_fd);
+            $v_bytes = 0x00000000;
+            while ($v_pos < $v_size) {
+                // ----- Read a byte
+                $v_byte = @fread($this->_zip_fd, 1);
+
+                // -----  Add the byte
+                $v_bytes = ($v_bytes << 8) | Ord($v_byte);
+
+                // ----- Compare the bytes
+                if ($v_bytes == 0x504b0506) {
+                    $v_pos++;
+                    break;
+                }
+
+                $v_pos++;
+            }
+
+            // ----- Look if not found end of central dir
+            if ($v_pos == $v_size) {
+                $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT,
+                                 "Unable to find End of Central Dir Record signature");
+                return Archive_Zip::errorCode();
+            }
+        }
+
+        // ----- Read the first 18 bytes of the header
         $v_binary_data = fread($this->_zip_fd, 18);
 
-    // ----- Look for invalid block size
+        // ----- Look for invalid block size
         if (strlen($v_binary_data) != 18) {
-        $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT,
-                       "Invalid End of Central Dir Record size : "
-                       .strlen($v_binary_data));
-      return Archive_Zip::errorCode();
-    }
+            $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT,
+                           "Invalid End of Central Dir Record size : "
+                           .strlen($v_binary_data));
+            return Archive_Zip::errorCode();
+        }
 
-    // ----- Extract the values
+        // ----- Extract the values
         $v_data = unpack('vdisk/vdisk_start/vdisk_entries/ventries/Vsize/Voffset/vcomment_size', $v_binary_data);
 
-    // ----- Check the global size
+        // ----- Check the global size
         if (($v_pos + $v_data['comment_size'] + 18) != $v_size) {
-        $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT,
-                       "Fail to find the right signature");
-      return Archive_Zip::errorCode();
-    }
+            $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT,
+                           "Fail to find the right signature");
+            return Archive_Zip::errorCode();
+        }
 
-    // ----- Get comment
-        if ($v_data['comment_size'] != 0)
-        $p_central_dir['comment'] = fread($this->_zip_fd, $v_data['comment_size']);
-    else
-        $p_central_dir['comment'] = '';
+        // ----- Get comment
+        if ($v_data['comment_size'] != 0) {
+            $p_central_dir['comment'] = fread($this->_zip_fd, $v_data['comment_size']);
+        } else {
+            $p_central_dir['comment'] = '';
+        }
 
         $p_central_dir['entries'] = $v_data['entries'];
         $p_central_dir['disk_entries'] = $v_data['disk_entries'];
@@ -2515,221 +2518,230 @@ class Archive_Zip
 
         $v_list_detail = array();
 
-    // ----- Open the zip file
-        if (($v_result=$this->_openFd('rb')) != 1)
-    {
-
-      return $v_result;
-    }
-
-    // ----- Read the central directory informations
-        $v_central_dir = array();
-        if (($v_result = $this->_readEndCentralDir($v_central_dir)) != 1)
-    {
-        $this->_closeFd();
-      return $v_result;
-    }
-
-    // ----- Go to beginning of File
-    @rewind($this->_zip_fd);
-
-    // ----- Scan all the files
-    // ----- Start at beginning of Central Dir
-        $v_pos_entry = $v_central_dir['offset'];
-    @rewind($this->_zip_fd);
-        if (@fseek($this->_zip_fd, $v_pos_entry)) {
-        // ----- Clean
-        $this->_closeFd();
-
-        $this->_errorLog(ARCHIVE_ZIP_ERR_INVALID_ARCHIVE_ZIP,
-                       'Invalid archive size');
-      return Archive_Zip::errorCode();
-    }
-
-    // ----- Read each entry
-        $v_header_list = array();
-        $j_start = 0;
-    for ($i=0, $v_nb_extracted=0; $i<$v_central_dir['entries']; $i++) {
-
-        // ----- Read the file header
-        $v_header_list[$v_nb_extracted] = array();
-        $v_result
-        = $this->_readCentralFileHeader($v_header_list[$v_nb_extracted]);
-        if ($v_result != 1) {
-        // ----- Clean
-        $this->_closeFd();
-
-        return $v_result;
-      }
-
-        // ----- Store the index
-        $v_header_list[$v_nb_extracted]['index'] = $i;
-
-        // ----- Look for the specific extract rules
-        $v_found = false;
-
-        // ----- Look for extract by name rule
-        if (   (isset($p_params[ARCHIVE_ZIP_PARAM_BY_NAME]))
-          && ($p_params[ARCHIVE_ZIP_PARAM_BY_NAME] != 0)) {
-
-          // ----- Look if the filename is in the list
-          for ($j=0;
-               ($j<sizeof($p_params[ARCHIVE_ZIP_PARAM_BY_NAME]))
-                 && (!$v_found);
-               $j++) {
-
-              // ----- Look for a directory
-              if (substr($p_params[ARCHIVE_ZIP_PARAM_BY_NAME][$j], -1) == "/") {
-
-                  // ----- Look if the directory is in the filename path
-                  if (   (strlen($v_header_list[$v_nb_extracted]['stored_filename']) > strlen($p_params[ARCHIVE_ZIP_PARAM_BY_NAME][$j]))
-                      && (substr($v_header_list[$v_nb_extracted]['stored_filename'], 0, strlen($p_params[ARCHIVE_ZIP_PARAM_BY_NAME][$j])) == $p_params[ARCHIVE_ZIP_PARAM_BY_NAME][$j])) {
-                      $v_found = true;
-                  }
-                  elseif (   (($v_header_list[$v_nb_extracted]['external']&0x00000010)==0x00000010) /* Indicates a folder */
-                          && ($v_header_list[$v_nb_extracted]['stored_filename'].'/' == $p_params[ARCHIVE_ZIP_PARAM_BY_NAME][$j])) {
-                      $v_found = true;
-                  }
-              }
-              // ----- Look for a filename
-              elseif ($v_header_list[$v_nb_extracted]['stored_filename']
-                      == $p_params[ARCHIVE_ZIP_PARAM_BY_NAME][$j]) {
-                  $v_found = true;
-              }
-          }
-      }
-
-        // ----- Look for extract by ereg rule
-      else if (   (isset($p_params[ARCHIVE_ZIP_PARAM_BY_EREG]))
-               && ($p_params[ARCHIVE_ZIP_PARAM_BY_EREG] != "")) {
-
-          if (ereg($p_params[ARCHIVE_ZIP_PARAM_BY_EREG],
-                   $v_header_list[$v_nb_extracted]['stored_filename'])) {
-              $v_found = true;
-          }
-      }
-
-        // ----- Look for extract by preg rule
-      else if (   (isset($p_params[ARCHIVE_ZIP_PARAM_BY_PREG]))
-               && ($p_params[ARCHIVE_ZIP_PARAM_BY_PREG] != "")) {
-
-          if (preg_match($p_params[ARCHIVE_ZIP_PARAM_BY_PREG],
-                         $v_header_list[$v_nb_extracted]['stored_filename'])) {
-              $v_found = true;
-          }
-      }
-
-        // ----- Look for extract by index rule
-      else if (   (isset($p_params[ARCHIVE_ZIP_PARAM_BY_INDEX]))
-               && ($p_params[ARCHIVE_ZIP_PARAM_BY_INDEX] != 0)) {
-
-          // ----- Look if the index is in the list
-          for ($j=$j_start;
-               ($j<sizeof($p_params[ARCHIVE_ZIP_PARAM_BY_INDEX]))
-                 && (!$v_found);
-               $j++) {
-
-              if (   ($i>=$p_params[ARCHIVE_ZIP_PARAM_BY_INDEX][$j]['start'])
-                  && ($i<=$p_params[ARCHIVE_ZIP_PARAM_BY_INDEX][$j]['end'])) {
-                  $v_found = true;
-              }
-              if ($i>=$p_params[ARCHIVE_ZIP_PARAM_BY_INDEX][$j]['end']) {
-                  $j_start = $j+1;
-              }
-
-              if ($p_params[ARCHIVE_ZIP_PARAM_BY_INDEX][$j]['start']>$i) {
-                  break;
-              }
-          }
-      }
-
-        // ----- Look for deletion
-        if ($v_found) {
-        unset($v_header_list[$v_nb_extracted]);
-      }
-      else {
-        $v_nb_extracted++;
-      }
-    }
-
-    // ----- Look if something need to be deleted
-        if ($v_nb_extracted > 0) {
-
-        // ----- Creates a temporay file
-        $v_zip_temp_name = ARCHIVE_ZIP_TEMPORARY_DIR.uniqid('archive_zip-')
-                           .'.tmp';
-
-        // ----- Creates a temporary zip archive
-        $v_temp_zip = new Archive_Zip($v_zip_temp_name);
-
-        // ----- Open the temporary zip file in write mode
-        if (($v_result = $v_temp_zip->_openFd('wb')) != 1) {
-            $this->_closeFd();
-
+        // ----- Open the zip file
+        if (($v_result=$this->_openFd('rb')) != 1) {
 
             return $v_result;
         }
 
-        // ----- Look which file need to be kept
-        for ($i=0; $i<sizeof($v_header_list); $i++) {
+        // ----- Read the central directory informations
+        $v_central_dir = array();
+        if (($v_result = $this->_readEndCentralDir($v_central_dir)) != 1) {
+            $this->_closeFd();
+            return $v_result;
+        }
 
-            // ----- Calculate the position of the header
-            @rewind($this->_zip_fd);
-            if (@fseek($this->_zip_fd,  $v_header_list[$i]['offset'])) {
-                // ----- Clean
-                $this->_closeFd();
-                $v_temp_zip->_closeFd();
-                @unlink($v_zip_temp_name);
+        // ----- Go to beginning of File
+        @rewind($this->_zip_fd);
 
-                $this->_errorLog(ARCHIVE_ZIP_ERR_INVALID_ARCHIVE_ZIP,
-                                 'Invalid archive size');
-                return Archive_Zip::errorCode();
-            }
+        // ----- Scan all the files
+        // ----- Start at beginning of Central Dir
+        $v_pos_entry = $v_central_dir['offset'];
+        @rewind($this->_zip_fd);
+        if (@fseek($this->_zip_fd, $v_pos_entry)) {
+            // ----- Clean
+            $this->_closeFd();
+
+            $this->_errorLog(ARCHIVE_ZIP_ERR_INVALID_ARCHIVE_ZIP,
+                           'Invalid archive size');
+            return Archive_Zip::errorCode();
+        }
+
+        // ----- Read each entry
+        $v_header_list = array();
+
+        $j_start = 0;
+        for ($i=0, $v_nb_extracted=0; $i<$v_central_dir['entries']; $i++) {
 
             // ----- Read the file header
-            if (($v_result = $this->_readFileHeader($v_header_list[$i])) != 1) {
+            $v_header_list[$v_nb_extracted] = array();
+
+            $v_result = $this->_readCentralFileHeader($v_header_list[$v_nb_extracted]);
+            if ($v_result != 1) {
                 // ----- Clean
                 $this->_closeFd();
-                $v_temp_zip->_closeFd();
-                @unlink($v_zip_temp_name);
 
                 return $v_result;
             }
 
-            // ----- Write the file header
-            $v_result = $v_temp_zip->_writeFileHeader($v_header_list[$i]);
-            if ($v_result != 1) {
-                // ----- Clean
-                $this->_closeFd();
-                $v_temp_zip->_closeFd();
-                @unlink($v_zip_temp_name);
+            // ----- Store the index
+            $v_header_list[$v_nb_extracted]['index'] = $i;
 
-                return $v_result;
+            // ----- Look for the specific extract rules
+            $v_found = false;
+
+            // ----- Look for extract by name rule
+            if ((isset($p_params[ARCHIVE_ZIP_PARAM_BY_NAME]))
+                && ($p_params[ARCHIVE_ZIP_PARAM_BY_NAME] != 0)) {
+
+                // ----- Look if the filename is in the list
+                for ($j=0; ($j<sizeof($p_params[ARCHIVE_ZIP_PARAM_BY_NAME])) && (!$v_found); $j++) {
+
+                    // ----- Look for a directory
+                    if (substr($p_params[ARCHIVE_ZIP_PARAM_BY_NAME][$j], -1) == "/") {
+
+                        // ----- Look if the directory is in the filename path
+                        if (   (strlen($v_header_list[$v_nb_extracted]['stored_filename']) > strlen($p_params[ARCHIVE_ZIP_PARAM_BY_NAME][$j]))
+                            && (substr($v_header_list[$v_nb_extracted]['stored_filename'], 0, strlen($p_params[ARCHIVE_ZIP_PARAM_BY_NAME][$j])) == $p_params[ARCHIVE_ZIP_PARAM_BY_NAME][$j])) {
+                            $v_found = true;
+                        } elseif ((($v_header_list[$v_nb_extracted]['external']&0x00000010)==0x00000010) /* Indicates a folder */
+                              && ($v_header_list[$v_nb_extracted]['stored_filename'].'/' == $p_params[ARCHIVE_ZIP_PARAM_BY_NAME][$j])) {
+                            $v_found = true;
+                        }
+                    } elseif ($v_header_list[$v_nb_extracted]['stored_filename'] == $p_params[ARCHIVE_ZIP_PARAM_BY_NAME][$j]) {
+                        // ----- Look for a filename
+                        $v_found = true;
+                    }
+                }
+            } else if ((isset($p_params[ARCHIVE_ZIP_PARAM_BY_EREG]))
+                   && ($p_params[ARCHIVE_ZIP_PARAM_BY_EREG] != "")) {
+
+                // ----- Look for extract by ereg rule
+
+                if (ereg($p_params[ARCHIVE_ZIP_PARAM_BY_EREG],
+                       $v_header_list[$v_nb_extracted]['stored_filename'])) {
+                    $v_found = true;
+                }
+            } else if ((isset($p_params[ARCHIVE_ZIP_PARAM_BY_PREG]))
+                   && ($p_params[ARCHIVE_ZIP_PARAM_BY_PREG] != "")) {
+                // ----- Look for extract by preg rule
+                if (preg_match($p_params[ARCHIVE_ZIP_PARAM_BY_PREG],
+                             $v_header_list[$v_nb_extracted]['stored_filename'])) {
+                    $v_found = true;
+                }
+            } else if ((isset($p_params[ARCHIVE_ZIP_PARAM_BY_INDEX]))
+                   && ($p_params[ARCHIVE_ZIP_PARAM_BY_INDEX] != 0)) {
+                // ----- Look for extract by index rule
+
+                // ----- Look if the index is in the list
+                for ($j=$j_start; ($j<sizeof($p_params[ARCHIVE_ZIP_PARAM_BY_INDEX])) && (!$v_found); $j++) {
+
+                    if (($i>=$p_params[ARCHIVE_ZIP_PARAM_BY_INDEX][$j]['start'])
+                        && ($i<=$p_params[ARCHIVE_ZIP_PARAM_BY_INDEX][$j]['end'])) {
+                        $v_found = true;
+                    }
+                    if ($i>=$p_params[ARCHIVE_ZIP_PARAM_BY_INDEX][$j]['end']) {
+                        $j_start = $j+1;
+                    }
+
+                    if ($p_params[ARCHIVE_ZIP_PARAM_BY_INDEX][$j]['start']>$i) {
+                        break;
+                    }
+                }
             }
 
-            // ----- Read/write the data block
-            $v_result = $this->_tool_CopyBlock($this->_zip_fd,
-                                               $v_temp_zip->_zip_fd,
-                                       $v_header_list[$i]['compressed_size']);
-            if ($v_result != 1) {
-                // ----- Clean
-                $this->_closeFd();
-                $v_temp_zip->_closeFd();
-                @unlink($v_zip_temp_name);
-
-                return $v_result;
+            // ----- Look for deletion
+            if ($v_found) {
+                unset($v_header_list[$v_nb_extracted]);
+            } else {
+                $v_nb_extracted++;
             }
         }
 
-        // ----- Store the offset of the central dir
-        $v_offset = @ftell($v_temp_zip->_zip_fd);
+        // ----- Look if something need to be deleted
+        if ($v_nb_extracted > 0) {
 
-        // ----- Re-Create the Central Dir files header
-        for ($i=0; $i<sizeof($v_header_list); $i++) {
-            // ----- Create the file header
-            $v_result=$v_temp_zip->_writeCentralFileHeader($v_header_list[$i]);
+            // ----- Creates a temporay file
+            $v_zip_temp_name = ARCHIVE_ZIP_TEMPORARY_DIR.uniqid('archive_zip-')
+                               .'.tmp';
+
+            // ----- Creates a temporary zip archive
+            $v_temp_zip = new Archive_Zip($v_zip_temp_name);
+
+            // ----- Open the temporary zip file in write mode
+            if (($v_result = $v_temp_zip->_openFd('wb')) != 1) {
+                $this->_closeFd();
+
+
+                return $v_result;
+            }
+
+            // ----- Look which file need to be kept
+            for ($i=0; $i<sizeof($v_header_list); $i++) {
+
+                // ----- Calculate the position of the header
+                @rewind($this->_zip_fd);
+                if (@fseek($this->_zip_fd,  $v_header_list[$i]['offset'])) {
+                    // ----- Clean
+                    $this->_closeFd();
+                    $v_temp_zip->_closeFd();
+                    @unlink($v_zip_temp_name);
+
+                    $this->_errorLog(ARCHIVE_ZIP_ERR_INVALID_ARCHIVE_ZIP,
+                                     'Invalid archive size');
+                    return Archive_Zip::errorCode();
+                }
+
+                // ----- Read the file header
+                if (($v_result = $this->_readFileHeader($v_header_list[$i])) != 1) {
+                    // ----- Clean
+                    $this->_closeFd();
+                    $v_temp_zip->_closeFd();
+                    @unlink($v_zip_temp_name);
+
+                    return $v_result;
+                }
+
+                // ----- Write the file header
+                $v_result = $v_temp_zip->_writeFileHeader($v_header_list[$i]);
+                if ($v_result != 1) {
+                    // ----- Clean
+                    $this->_closeFd();
+                    $v_temp_zip->_closeFd();
+                    @unlink($v_zip_temp_name);
+
+                    return $v_result;
+                }
+
+                // ----- Read/write the data block
+                $v_result = $this->_tool_CopyBlock($this->_zip_fd,
+                                                   $v_temp_zip->_zip_fd,
+                                           $v_header_list[$i]['compressed_size']);
+                if ($v_result != 1) {
+                    // ----- Clean
+                    $this->_closeFd();
+                    $v_temp_zip->_closeFd();
+                    @unlink($v_zip_temp_name);
+
+                    return $v_result;
+                }
+            }
+
+            // ----- Store the offset of the central dir
+            $v_offset = @ftell($v_temp_zip->_zip_fd);
+
+            // ----- Re-Create the Central Dir files header
+            for ($i=0; $i<sizeof($v_header_list); $i++) {
+                // ----- Create the file header
+                $v_result=$v_temp_zip->_writeCentralFileHeader($v_header_list[$i]);
+                if ($v_result != 1) {
+                    // ----- Clean
+                    $v_temp_zip->_closeFd();
+                    $this->_closeFd();
+                    @unlink($v_zip_temp_name);
+
+                    return $v_result;
+                }
+
+                // ----- Transform the header to a 'usable' info
+                $v_temp_zip->_convertHeader2FileInfo($v_header_list[$i],
+                                                     $p_result_list[$i]);
+            }
+
+
+            // ----- Zip file comment
+            $v_comment = '';
+
+            // ----- Calculate the size of the central header
+            $v_size = @ftell($v_temp_zip->_zip_fd)-$v_offset;
+
+            // ----- Create the central dir footer
+            $v_result = $v_temp_zip->_writeCentralHeader(sizeof($v_header_list),
+                                                         $v_size, $v_offset,
+                                                         $v_comment);
             if ($v_result != 1) {
                 // ----- Clean
+                unset($v_header_list);
                 $v_temp_zip->_closeFd();
                 $this->_closeFd();
                 @unlink($v_zip_temp_name);
@@ -2737,48 +2749,22 @@ class Archive_Zip
                 return $v_result;
             }
 
-            // ----- Transform the header to a 'usable' info
-            $v_temp_zip->_convertHeader2FileInfo($v_header_list[$i],
-                                                 $p_result_list[$i]);
-        }
-
-
-        // ----- Zip file comment
-        $v_comment = '';
-
-        // ----- Calculate the size of the central header
-        $v_size = @ftell($v_temp_zip->_zip_fd)-$v_offset;
-
-        // ----- Create the central dir footer
-        $v_result = $v_temp_zip->_writeCentralHeader(sizeof($v_header_list),
-                                                     $v_size, $v_offset,
-                                                     $v_comment);
-        if ($v_result != 1) {
-            // ----- Clean
-            unset($v_header_list);
+            // ----- Close
             $v_temp_zip->_closeFd();
             $this->_closeFd();
-            @unlink($v_zip_temp_name);
 
-            return $v_result;
+            // ----- Delete the zip file
+            // TBC : I should test the result ...
+            @unlink($this->_zipname);
+
+            // ----- Rename the temporary file
+            // TBC : I should test the result ...
+            //@rename($v_zip_temp_name, $this->_zipname);
+            $this->_tool_Rename($v_zip_temp_name, $this->_zipname);
+
+            // ----- Destroy the temporary archive
+            unset($v_temp_zip);
         }
-
-        // ----- Close
-        $v_temp_zip->_closeFd();
-        $this->_closeFd();
-
-        // ----- Delete the zip file
-        // TBC : I should test the result ...
-        @unlink($this->_zipname);
-
-        // ----- Rename the temporary file
-        // TBC : I should test the result ...
-        //@rename($v_zip_temp_name, $this->_zipname);
-        $this->_tool_Rename($v_zip_temp_name, $this->_zipname);
-
-        // ----- Destroy the temporary archive
-        unset($v_temp_zip);
-    }
 
 
         return $v_result;
@@ -2807,35 +2793,35 @@ class Archive_Zip
     {
         $v_result = 1;
 
-    // ----- Remove the final '/'
+        // ----- Remove the final '/'
         if (($p_is_dir) && (substr($p_dir, -1)=='/')) {
-        $p_dir = substr($p_dir, 0, strlen($p_dir)-1);
-    }
+            $p_dir = substr($p_dir, 0, strlen($p_dir)-1);
+        }
 
-    // ----- Check the directory availability
+        // ----- Check the directory availability
         if ((is_dir($p_dir)) || ($p_dir == "")) {
-      return 1;
-    }
+            return 1;
+        }
 
-    // ----- Extract parent directory
+        // ----- Extract parent directory
         $p_parent_dir = dirname($p_dir);
 
-    // ----- Just a check
+        // ----- Just a check
         if ($p_parent_dir != $p_dir) {
-        // ----- Look for parent directory
-        if ($p_parent_dir != "") {
-        if (($v_result = $this->_dirCheck($p_parent_dir)) != 1) {
-          return $v_result;
+            // ----- Look for parent directory
+            if ($p_parent_dir != "") {
+                if (($v_result = $this->_dirCheck($p_parent_dir)) != 1) {
+                    return $v_result;
+                }
+            }
         }
-      }
-    }
 
-    // ----- Create the directory
+        // ----- Create the directory
         if (!@mkdir($p_dir, 0777)) {
-        $this->_errorLog(ARCHIVE_ZIP_ERR_DIR_CREATE_FAIL,
+            $this->_errorLog(ARCHIVE_ZIP_ERR_DIR_CREATE_FAIL,
                        "Unable to create directory '$p_dir'");
-      return Archive_Zip::errorCode();
-    }
+            return Archive_Zip::errorCode();
+        }
 
 
         return $v_result;
