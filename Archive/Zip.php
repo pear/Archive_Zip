@@ -139,7 +139,7 @@ class Archive_Zip
 
         // ----- Check the zlib
         if (!extension_loaded('zlib')) {
-          PEAR::loadExtension('zlib');
+            PEAR::loadExtension('zlib');
         }
         if (!extension_loaded('zlib')) {
             die("The extension 'zlib' couldn't be found.\n".
@@ -1220,74 +1220,68 @@ class Archive_Zip
     {
         $v_result = 1;
 
-        if ($p_filename == "")
-    {
-        // ----- Error log
-        $this->_errorLog(ARCHIVE_ZIP_ERR_INVALID_PARAMETER, "Invalid file list parameter (invalid or empty list)");
+        if ($p_filename == "") {
+            // ----- Error log
+            $this->_errorLog(ARCHIVE_ZIP_ERR_INVALID_PARAMETER, "Invalid file list parameter (invalid or empty list)");
 
 
-      return Archive_Zip::errorCode();
-    }
+            return Archive_Zip::errorCode();
+        }
 
-    // ----- Calculate the stored filename
+        // ----- Calculate the stored filename
         $v_stored_filename = $p_filename;
 
-    // ----- Look for all path to remove
+        // ----- Look for all path to remove
         if ($p_remove_all_dir) {
-        $v_stored_filename = basename($p_filename);
-    }
-    // ----- Look for partial path remove
-    else if ($p_remove_dir != "")
-    {
-        if (substr($p_remove_dir, -1) != '/')
-        $p_remove_dir .= "/";
+            $v_stored_filename = basename($p_filename);
+        } else if ($p_remove_dir != "") {
+            if (substr($p_remove_dir, -1) != '/') {
+                $p_remove_dir .= "/";
+            }
 
-        if ((substr($p_filename, 0, 2) == "./") || (substr($p_remove_dir, 0, 2) == "./")) {
-        if ((substr($p_filename, 0, 2) == "./") && (substr($p_remove_dir, 0, 2) != "./")) {
-          $p_remove_dir = "./".$p_remove_dir;
+            if ((substr($p_filename, 0, 2) == "./") || (substr($p_remove_dir, 0, 2) == "./")) {
+                if ((substr($p_filename, 0, 2) == "./") && (substr($p_remove_dir, 0, 2) != "./")) {
+                    $p_remove_dir = "./".$p_remove_dir;
+                }
+                if ((substr($p_filename, 0, 2) != "./") && (substr($p_remove_dir, 0, 2) == "./")) {
+                    $p_remove_dir = substr($p_remove_dir, 2);
+                }
+            }
+
+            $v_compare = $this->_tool_PathInclusion($p_remove_dir, $p_filename);
+            if ($v_compare > 0) {
+                if ($v_compare == 2) {
+                    $v_stored_filename = "";
+                } else {
+                    $v_stored_filename = substr($p_filename, strlen($p_remove_dir));
+                }
+            }
         }
-        if ((substr($p_filename, 0, 2) != "./") && (substr($p_remove_dir, 0, 2) == "./")) {
-          $p_remove_dir = substr($p_remove_dir, 2);
+        // ----- Look for path to add
+        if ($p_add_dir != "") {
+            if (substr($p_add_dir, -1) == "/") {
+                $v_stored_filename = $p_add_dir.$v_stored_filename;
+            } else {
+                $v_stored_filename = $p_add_dir."/".$v_stored_filename;
+            }
         }
-      }
 
-        $v_compare = $this->_tool_PathInclusion($p_remove_dir, $p_filename);
-        if ($v_compare > 0) {
-
-        if ($v_compare == 2) {
-          $v_stored_filename = "";
-        } else {
-          $v_stored_filename = substr($p_filename, strlen($p_remove_dir));
-        }
-      }
-    }
-    // ----- Look for path to add
-        if ($p_add_dir != "")
-    {
-        if (substr($p_add_dir, -1) == "/")
-        $v_stored_filename = $p_add_dir.$v_stored_filename;
-      else
-        $v_stored_filename = $p_add_dir."/".$v_stored_filename;
-    }
-
-    // ----- Filename (reduce the path of stored name)
+        // ----- Filename (reduce the path of stored name)
         $v_stored_filename = $this->_tool_PathReduction($v_stored_filename);
 
 
-    /* filename length moved after call-back in release 1.3
-    // ----- Check the path length
-        if (strlen($v_stored_filename) > 0xFF)
-    {
-        // ----- Error log
-        $this->_errorLog(-5, "Stored file name is too long (max. 255) : '$v_stored_filename'");
+            /* filename length moved after call-back in release 1.3
+            // ----- Check the path length
+                if (strlen($v_stored_filename) > 0xFF) {
+                    // ----- Error log
+                    $this->_errorLog(-5, "Stored file name is too long (max. 255) : '$v_stored_filename'");
 
+                    return Archive_Zip::errorCode();
+                }
+             */
 
-      return Archive_Zip::errorCode();
-    }
-     */
-
-    // ----- Set the file properties
-    clearstatcache();
+        // ----- Set the file properties
+        clearstatcache();
         $p_header['version'] = 20;
         $p_header['version_extracted'] = 10;
         $p_header['flag'] = 0;
@@ -1310,125 +1304,123 @@ class Archive_Zip
         $p_header['status'] = 'ok';
         $p_header['index'] = -1;
 
-    // ----- Look for pre-add callback
+        // ----- Look for pre-add callback
         if ((isset($p_params[ARCHIVE_ZIP_PARAM_PRE_ADD]))
-        && ($p_params[ARCHIVE_ZIP_PARAM_PRE_ADD] != '')) {
+            && ($p_params[ARCHIVE_ZIP_PARAM_PRE_ADD] != '')) {
 
-        // ----- Generate a local information
-        $v_local_header = array();
-        $this->_convertHeader2FileInfo($p_header, $v_local_header);
+            // ----- Generate a local information
+            $v_local_header = array();
+            $this->_convertHeader2FileInfo($p_header, $v_local_header);
 
-        // ----- Call the callback
-        // Here I do not use call_user_func() because I need to send a reference to the
-        // header.
-      eval('$v_result = '.$p_params[ARCHIVE_ZIP_PARAM_PRE_ADD].'(ARCHIVE_ZIP_PARAM_PRE_ADD, $v_local_header);');
-        if ($v_result == 0) {
-        // ----- Change the file status
-        $p_header['status'] = "skipped";
-        $v_result = 1;
-      }
+            // ----- Call the callback
+            // Here I do not use call_user_func() because I need to send a reference to the
+            // header.
+            eval('$v_result = '.$p_params[ARCHIVE_ZIP_PARAM_PRE_ADD].'(ARCHIVE_ZIP_PARAM_PRE_ADD, $v_local_header);');
+            if ($v_result == 0) {
+                // ----- Change the file status
+                $p_header['status'] = "skipped";
 
-        // ----- Update the informations
-        // Only some fields can be modified
-        if ($p_header['stored_filename'] != $v_local_header['stored_filename']) {
-        $p_header['stored_filename'] = $this->_tool_PathReduction($v_local_header['stored_filename']);
-      }
-    }
+                $v_result = 1;
+            }
 
-    // ----- Look for empty stored filename
+            // ----- Update the informations
+            // Only some fields can be modified
+            if ($p_header['stored_filename'] != $v_local_header['stored_filename']) {
+                $p_header['stored_filename'] = $this->_tool_PathReduction($v_local_header['stored_filename']);
+            }
+        }
+
+        // ----- Look for empty stored filename
         if ($p_header['stored_filename'] == "") {
-        $p_header['status'] = "filtered";
-    }
+            $p_header['status'] = "filtered";
+        }
 
-    // ----- Check the path length
+        // ----- Check the path length
         if (strlen($p_header['stored_filename']) > 0xFF) {
-        $p_header['status'] = 'filename_too_long';
-    }
+            $p_header['status'] = 'filename_too_long';
+        }
 
-    // ----- Look if no error, or file not skipped
+        // ----- Look if no error, or file not skipped
         if ($p_header['status'] == 'ok') {
 
-        // ----- Look for a file
-        if (is_file($p_filename)) {
-        // ----- Open the source file
-        if (($v_file = @fopen($p_filename, "rb")) == 0) {
-          $this->_errorLog(ARCHIVE_ZIP_ERR_READ_OPEN_FAIL, "Unable to open file '$p_filename' in binary read mode");
-          return Archive_Zip::errorCode();
+            // ----- Look for a file
+            if (is_file($p_filename)) {
+                // ----- Open the source file
+                if (($v_file = @fopen($p_filename, "rb")) == 0) {
+                    $this->_errorLog(ARCHIVE_ZIP_ERR_READ_OPEN_FAIL, "Unable to open file '$p_filename' in binary read mode");
+                    return Archive_Zip::errorCode();
+                }
+
+                if ($p_params['no_compression']) {
+                    // ----- Read the file content
+                    $v_content_compressed = @fread($v_file, $p_header['size']);
+
+                    // ----- Calculate the CRC
+                    $p_header['crc'] = crc32($v_content_compressed);
+                } else {
+                    // ----- Read the file content
+                    $v_content = @fread($v_file, $p_header['size']);
+
+                    // ----- Calculate the CRC
+                    $p_header['crc'] = crc32($v_content);
+
+                    // ----- Compress the file
+                    $v_content_compressed = gzdeflate($v_content);
+                }
+
+                // ----- Set header parameters
+                $p_header['compressed_size'] = strlen($v_content_compressed);
+                $p_header['compression'] = 8;
+
+                // ----- Call the header generation
+                if (($v_result = $this->_writeFileHeader($p_header)) != 1) {
+                    @fclose($v_file);
+                    return $v_result;
+                }
+
+                // ----- Write the compressed content
+                $v_binary_data = pack('a'.$p_header['compressed_size'], $v_content_compressed);
+                @fwrite($this->_zip_fd, $v_binary_data, $p_header['compressed_size']);
+
+                // ----- Close the file
+                @fclose($v_file);
+            } else {
+                // ----- Look for a directory
+                // ----- Set the file properties
+                $p_header['filename'] .= '/';
+                $p_header['filename_len']++;
+                $p_header['size'] = 0;
+                $p_header['external'] = 0x41FF0010;   // Value for a folder : to be checked
+
+                // ----- Call the header generation
+                if (($v_result = $this->_writeFileHeader($p_header)) != 1) {
+                    return $v_result;
+                }
+            }
         }
 
-        if ($p_params['no_compression']) {
-          // ----- Read the file content
-          $v_content_compressed = @fread($v_file, $p_header['size']);
+        // ----- Look for pre-add callback
+        if ((isset($p_params[ARCHIVE_ZIP_PARAM_POST_ADD]))
+            && ($p_params[ARCHIVE_ZIP_PARAM_POST_ADD] != '')) {
 
-          // ----- Calculate the CRC
-          $p_header['crc'] = crc32($v_content_compressed);
-        } else {
-          // ----- Read the file content
-          $v_content = @fread($v_file, $p_header['size']);
+            // ----- Generate a local information
+            $v_local_header = array();
+            $this->_convertHeader2FileInfo($p_header, $v_local_header);
 
-          // ----- Calculate the CRC
-          $p_header['crc'] = crc32($v_content);
+            // ----- Call the callback
+            // Here I do not use call_user_func() because I need to send a reference to the
+            // header.
+            eval('$v_result = '.$p_params[ARCHIVE_ZIP_PARAM_POST_ADD].'(ARCHIVE_ZIP_PARAM_POST_ADD, $v_local_header);');
 
-          // ----- Compress the file
-          $v_content_compressed = gzdeflate($v_content);
+            if ($v_result == 0) {
+                // ----- Ignored
+                $v_result = 1;
+            }
+
+            // ----- Update the informations
+            // Nothing can be modified
         }
 
-        // ----- Set header parameters
-        $p_header['compressed_size'] = strlen($v_content_compressed);
-        $p_header['compression'] = 8;
-
-        // ----- Call the header generation
-        if (($v_result = $this->_writeFileHeader($p_header)) != 1) {
-          @fclose($v_file);
-          return $v_result;
-        }
-
-        // ----- Write the compressed content
-        $v_binary_data = pack('a'.$p_header['compressed_size'], $v_content_compressed);
-        @fwrite($this->_zip_fd, $v_binary_data, $p_header['compressed_size']);
-
-        // ----- Close the file
-        @fclose($v_file);
-      }
-
-        // ----- Look for a directory
-      else
-      {
-        // ----- Set the file properties
-        $p_header['filename'] .= '/';
-        $p_header['filename_len']++;
-        $p_header['size'] = 0;
-        $p_header['external'] = 0x41FF0010;   // Value for a folder : to be checked
-
-        // ----- Call the header generation
-        if (($v_result = $this->_writeFileHeader($p_header)) != 1) {
-          return $v_result;
-        }
-      }
-    }
-
-    // ----- Look for pre-add callback
-        if (   (isset($p_params[ARCHIVE_ZIP_PARAM_POST_ADD]))
-        && ($p_params[ARCHIVE_ZIP_PARAM_POST_ADD] != '')) {
-
-        // ----- Generate a local information
-        $v_local_header = array();
-        $this->_convertHeader2FileInfo($p_header, $v_local_header);
-
-        // ----- Call the callback
-        // Here I do not use call_user_func() because I need to send a reference to the
-        // header.
-      eval('$v_result = '.$p_params[ARCHIVE_ZIP_PARAM_POST_ADD].'(ARCHIVE_ZIP_PARAM_POST_ADD, $v_local_header);');
-        if ($v_result == 0) {
-        // ----- Ignored
-        $v_result = 1;
-      }
-
-        // ----- Update the informations
-        // Nothing can be modified
-    }
-
-    // ----- Return
         return $v_result;
     }
     // ---------------------------------------------------------------------------
