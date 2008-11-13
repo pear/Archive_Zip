@@ -150,7 +150,7 @@ class Archive_Zip
 
         // ----- Set the attributes
         $this->_zipname = $p_zipname;
-        $this->_zip_fd = 0;
+        $this->_zip_fd  = 0;
 
         return;
     }
@@ -514,10 +514,10 @@ class Archive_Zip
         }
 
         // ----- Default properties
-        $v_prop = array();
+        $v_prop            = array();
         $v_prop['comment'] = '';
-        $v_prop['nb'] = 0;
-        $v_prop['status'] = 'not_exist';
+        $v_prop['nb']      = 0;
+        $v_prop['status']  = 'not_exist';
 
         // ----- Look if file exists
         if (@is_file($this->_zipname)) {
@@ -539,8 +539,8 @@ class Archive_Zip
 
             // ----- Set the user attributes
             $v_prop['comment'] = $v_central_dir['comment'];
-            $v_prop['nb'] = $v_central_dir['entries'];
-            $v_prop['status'] = 'ok';
+            $v_prop['nb']      = $v_central_dir['entries'];
+            $v_prop['status']  = 'ok';
         }
 
         return $v_prop;
@@ -782,8 +782,8 @@ class Archive_Zip
 
         $v_list_detail = array();
 
-        $p_add_dir = $p_params['add_path'];
-        $p_remove_dir = $p_params['remove_path'];
+        $p_add_dir        = $p_params['add_path'];
+        $p_remove_dir     = $p_params['remove_path'];
         $p_remove_all_dir = $p_params['remove_all_path'];
 
         // ----- Open the file in write mode
@@ -821,8 +821,8 @@ class Archive_Zip
 
         $v_list_detail = array();
 
-        $p_add_dir = $p_params['add_path'];
-        $p_remove_dir = $p_params['remove_path'];
+        $p_add_dir        = $p_params['add_path'];
+        $p_remove_dir     = $p_params['remove_path'];
         $p_remove_all_dir = $p_params['remove_all_path'];
 
         // ----- Look if the archive exists or is empty and need to be created
@@ -866,7 +866,9 @@ class Archive_Zip
         while ($v_size != 0) {
             $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
                             ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+
             $v_buffer = fread($this->_zip_fd, $v_read_size);
+
             @fwrite($v_zip_temp_fd, $v_buffer, $v_read_size);
             $v_size -= $v_read_size;
         }
@@ -875,6 +877,7 @@ class Archive_Zip
         // Here is a trick : I swap the temporary fd with the zip fd, in order to
         // use the following methods on the temporary fil and not the real archive
         $v_swap = $this->_zip_fd;
+
         $this->_zip_fd = $v_zip_temp_fd;
         $v_zip_temp_fd = $v_swap;
 
@@ -899,7 +902,9 @@ class Archive_Zip
         while ($v_size != 0) {
             $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
                             ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+
             $v_buffer = @fread($v_zip_temp_fd, $v_read_size);
+
             @fwrite($this->_zip_fd, $v_buffer, $v_read_size);
             $v_size -= $v_read_size;
         }
@@ -943,6 +948,7 @@ class Archive_Zip
 
         // ----- Swap back the file descriptor
         $v_swap = $this->_zip_fd;
+
         $this->_zip_fd = $v_zip_temp_fd;
         $v_zip_temp_fd = $v_swap;
 
@@ -1184,6 +1190,7 @@ class Archive_Zip
                         // ----- Recursive call to _addFileList()
                         // ----- Need an array as parameter
                         $p_temp_list[0] = $v_path.$p_hitem;
+
                         $v_result = $this->_addFileList($p_temp_list, $p_result_list, $p_add_dir, $p_remove_dir, $p_remove_all_dir, $p_params);
 
                         // ----- Update the number of elements of the list
@@ -1280,27 +1287,27 @@ class Archive_Zip
 
         // ----- Set the file properties
         clearstatcache();
-        $p_header['version'] = 20;
+        $p_header['comment']           = '';
+        $p_header['comment_len']       = 0;
+        $p_header['compressed_size']   = 0;
+        $p_header['compression']       = 0;
+        $p_header['crc']               = 0;
+        $p_header['disk']              = 0;
+        $p_header['external']          = (is_file($p_filename)?0xFE49FFE0:0x41FF0010);
+        $p_header['extra']             = '';
+        $p_header['extra_len']         = 0;
+        $p_header['filename']          = $p_filename;
+        $p_header['filename_len']      = strlen($p_filename);
+        $p_header['flag']              = 0;
+        $p_header['index']             = -1;
+        $p_header['internal']          = 0;
+        $p_header['mtime']             = filemtime($p_filename);
+        $p_header['offset']            = 0;
+        $p_header['size']              = filesize($p_filename);
+        $p_header['status']            = 'ok';
+        $p_header['stored_filename']   = $v_stored_filename;
+        $p_header['version']           = 20;
         $p_header['version_extracted'] = 10;
-        $p_header['flag'] = 0;
-        $p_header['compression'] = 0;
-        $p_header['mtime'] = filemtime($p_filename);
-        $p_header['crc'] = 0;
-        $p_header['compressed_size'] = 0;
-        $p_header['size'] = filesize($p_filename);
-        $p_header['filename_len'] = strlen($p_filename);
-        $p_header['extra_len'] = 0;
-        $p_header['comment_len'] = 0;
-        $p_header['disk'] = 0;
-        $p_header['internal'] = 0;
-        $p_header['external'] = (is_file($p_filename)?0xFE49FFE0:0x41FF0010);
-        $p_header['offset'] = 0;
-        $p_header['filename'] = $p_filename;
-        $p_header['stored_filename'] = $v_stored_filename;
-        $p_header['extra'] = '';
-        $p_header['comment'] = '';
-        $p_header['status'] = 'ok';
-        $p_header['index'] = -1;
 
         // ----- Look for pre-add callback
         if ((isset($p_params[ARCHIVE_ZIP_PARAM_PRE_ADD]))
@@ -1368,7 +1375,7 @@ class Archive_Zip
 
                 // ----- Set header parameters
                 $p_header['compressed_size'] = strlen($v_content_compressed);
-                $p_header['compression'] = 8;
+                $p_header['compression']     = 8;
 
                 // ----- Call the header generation
                 if (($v_result = $this->_writeFileHeader($p_header)) != 1) {
@@ -1387,7 +1394,8 @@ class Archive_Zip
                 // ----- Set the file properties
                 $p_header['filename'] .= '/';
                 $p_header['filename_len']++;
-                $p_header['size'] = 0;
+
+                $p_header['size']     = 0;
                 $p_header['external'] = 0x41FF0010;   // Value for a folder : to be checked
 
                 // ----- Call the header generation
@@ -1447,7 +1455,7 @@ class Archive_Zip
         $p_header['offset'] = ftell($this->_zip_fd);
 
         // ----- Transform UNIX mtime to DOS format mdate/mtime
-        $v_date = getdate($p_header['mtime']);
+        $v_date  = getdate($p_header['mtime']);
         $v_mtime = ($v_date['hours']<<11) + ($v_date['minutes']<<5) + $v_date['seconds']/2;
         $v_mdate = (($v_date['year']-1980)<<9) + ($v_date['mon']<<5) + $v_date['mday'];
 
@@ -1494,7 +1502,7 @@ class Archive_Zip
         //}
 
         // ----- Transform UNIX mtime to DOS format mdate/mtime
-        $v_date = getdate($p_header['mtime']);
+        $v_date  = getdate($p_header['mtime']);
         $v_mtime = ($v_date['hours']<<11) + ($v_date['minutes']<<5) + $v_date['seconds']/2;
         $v_mdate = (($v_date['year']-1980)<<9) + ($v_date['mon']<<5) + $v_date['mday'];
 
@@ -1646,15 +1654,15 @@ class Archive_Zip
         $v_result = 1;
 
         // ----- Get the interesting attributes
-        $p_info['filename'] = $p_header['filename'];
+        $p_info['filename']        = $p_header['filename'];
         $p_info['stored_filename'] = $p_header['stored_filename'];
-        $p_info['size'] = $p_header['size'];
+        $p_info['size']            = $p_header['size'];
         $p_info['compressed_size'] = $p_header['compressed_size'];
-        $p_info['mtime'] = $p_header['mtime'];
-        $p_info['comment'] = $p_header['comment'];
-        $p_info['folder'] = (($p_header['external']&0x00000010)==0x00000010);
-        $p_info['index'] = $p_header['index'];
-        $p_info['status'] = $p_header['status'];
+        $p_info['mtime']           = $p_header['mtime'];
+        $p_info['comment']         = $p_header['comment'];
+        $p_info['folder']          = (($p_header['external']&0x00000010)==0x00000010);
+        $p_info['index']           = $p_header['index'];
+        $p_info['status']          = $p_header['status'];
 
 
         return $v_result;
@@ -1687,15 +1695,16 @@ class Archive_Zip
     {
         $v_result = 1;
 
-        $p_path = $p_params['add_path'];
-        $p_remove_path = $p_params['remove_path'];
+        $p_path            = $p_params['add_path'];
+        $p_remove_path     = $p_params['remove_path'];
         $p_remove_all_path = $p_params['remove_all_path'];
 
         // ----- Check the path
         if (($p_path == "")
-        || ((substr($p_path, 0, 1) != "/")
-        && (substr($p_path, 0, 3) != "../") && (substr($p_path,1,2)!=":/")))
-        $p_path = "./".$p_path;
+            || ((substr($p_path, 0, 1) != "/")
+            && (substr($p_path, 0, 3) != "../") && (substr($p_path,1,2)!=":/"))) {
+            $p_path = "./".$p_path;
+        }
 
         // ----- Reduce the path last (and duplicated) '/'
         if (($p_path != "./") && ($p_path != "/")) {
@@ -1949,6 +1958,7 @@ class Archive_Zip
             if ($v_result == 0) {
                 // ----- Change the file status
                 $p_entry['status'] = "skipped";
+
                 $v_result = 1;
             }
 
@@ -2032,8 +2042,11 @@ class Archive_Zip
                     $v_size = $p_entry['compressed_size'];
                     while ($v_size != 0) {
                         $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+
                         $v_buffer = fread($this->_zip_fd, $v_read_size);
+
                         $v_binary_data = pack('a'.$v_read_size, $v_buffer);
+
                         @fwrite($v_dest_file, $v_binary_data, $v_read_size);
                         $v_size -= $v_read_size;
                     }
@@ -2195,7 +2208,7 @@ class Archive_Zip
         // ----- Look for invalid block size
         if (strlen($v_binary_data) != 26) {
             $p_header['filename'] = "";
-            $p_header['status'] = "invalid_header";
+            $p_header['status']   = "invalid_header";
 
             // ----- Error log
             $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT, "Invalid block size : ".strlen($v_binary_data));
@@ -2218,25 +2231,25 @@ class Archive_Zip
         }
 
         // ----- Extract properties
-        $p_header['compression'] = $v_data['compression'];
-        $p_header['size'] = $v_data['size'];
+        $p_header['compression']     = $v_data['compression'];
+        $p_header['size']            = $v_data['size'];
         $p_header['compressed_size'] = $v_data['compressed_size'];
-        $p_header['crc'] = $v_data['crc'];
-        $p_header['flag'] = $v_data['flag'];
+        $p_header['crc']             = $v_data['crc'];
+        $p_header['flag']            = $v_data['flag'];
 
         // ----- Recuperate date in UNIX format
         $p_header['mdate'] = $v_data['mdate'];
         $p_header['mtime'] = $v_data['mtime'];
         if ($p_header['mdate'] && $p_header['mtime']) {
             // ----- Extract time
-            $v_hour = ($p_header['mtime'] & 0xF800) >> 11;
-            $v_minute = ($p_header['mtime'] & 0x07E0) >> 5;
+            $v_hour    = ($p_header['mtime'] & 0xF800) >> 11;
+            $v_minute  = ($p_header['mtime'] & 0x07E0) >> 5;
             $v_seconde = ($p_header['mtime'] & 0x001F)*2;
 
             // ----- Extract date
-            $v_year = (($p_header['mdate'] & 0xFE00) >> 9) + 1980;
+            $v_year  = (($p_header['mdate'] & 0xFE00) >> 9) + 1980;
             $v_month = ($p_header['mdate'] & 0x01E0) >> 5;
-            $v_day = $p_header['mdate'] & 0x001F;
+            $v_day   = $p_header['mdate'] & 0x001F;
 
             // ----- Get UNIX date format
             $p_header['mtime'] = mktime($v_hour, $v_minute, $v_seconde, $v_month, $v_day, $v_year);
@@ -2280,6 +2293,7 @@ class Archive_Zip
 
         // ----- Read the 4 bytes signature
         $v_binary_data = @fread($this->_zip_fd, 4);
+
         $v_data = unpack('Vid', $v_binary_data);
 
         // ----- Check signature
@@ -2298,7 +2312,7 @@ class Archive_Zip
         // ----- Look for invalid block size
         if (strlen($v_binary_data) != 42) {
             $p_header['filename'] = "";
-            $p_header['status'] = "invalid_header";
+            $p_header['status']   = "invalid_header";
 
             // ----- Error log
             $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT, "Invalid block size : ".strlen($v_binary_data));
@@ -2336,14 +2350,14 @@ class Archive_Zip
         // ----- Recuperate date in UNIX format
         if ($p_header['mdate'] && $p_header['mtime']) {
             // ----- Extract time
-            $v_hour = ($p_header['mtime'] & 0xF800) >> 11;
-            $v_minute = ($p_header['mtime'] & 0x07E0) >> 5;
+            $v_hour    = ($p_header['mtime'] & 0xF800) >> 11;
+            $v_minute  = ($p_header['mtime'] & 0x07E0) >> 5;
             $v_seconde = ($p_header['mtime'] & 0x001F)*2;
 
             // ----- Extract date
-            $v_year = (($p_header['mdate'] & 0xFE00) >> 9) + 1980;
+            $v_year  = (($p_header['mdate'] & 0xFE00) >> 9) + 1980;
             $v_month = ($p_header['mdate'] & 0x01E0) >> 5;
-            $v_day = $p_header['mdate'] & 0x001F;
+            $v_day   = $p_header['mdate'] & 0x001F;
 
             // ----- Get UNIX date format
             $p_header['mtime'] = mktime($v_hour, $v_minute, $v_seconde, $v_month, $v_day, $v_year);
@@ -2410,6 +2424,7 @@ class Archive_Zip
 
             // ----- Read for bytes
             $v_binary_data = @fread($this->_zip_fd, 4);
+
             $v_data = unpack('Vid', $v_binary_data);
 
             // ----- Check signature
@@ -2423,8 +2438,9 @@ class Archive_Zip
         // ----- Go back to the maximum possible size of the Central Dir End Record
         if (!$v_found) {
             $v_maximum_size = 65557; // 0xFFFF + 22;
-            if ($v_maximum_size > $v_size)
-            $v_maximum_size = $v_size;
+            if ($v_maximum_size > $v_size) {
+                $v_maximum_size = $v_size;
+            }
             @fseek($this->_zip_fd, $v_size-$v_maximum_size);
             if (@ftell($this->_zip_fd) != ($v_size-$v_maximum_size)) {
                 $this->_errorLog(ARCHIVE_ZIP_ERR_BAD_FORMAT,
@@ -2434,7 +2450,7 @@ class Archive_Zip
             }
 
             // ----- Read byte per byte in order to find the signature
-            $v_pos = ftell($this->_zip_fd);
+            $v_pos   = ftell($this->_zip_fd);
             $v_bytes = 0x00000000;
             while ($v_pos < $v_size) {
                 // ----- Read a byte
@@ -2488,12 +2504,12 @@ class Archive_Zip
             $p_central_dir['comment'] = '';
         }
 
-        $p_central_dir['entries'] = $v_data['entries'];
+        $p_central_dir['entries']      = $v_data['entries'];
         $p_central_dir['disk_entries'] = $v_data['disk_entries'];
-        $p_central_dir['offset'] = $v_data['offset'];
-        $p_central_dir['size'] = $v_data['size'];
-        $p_central_dir['disk'] = $v_data['disk'];
-        $p_central_dir['disk_start'] = $v_data['disk_start'];
+        $p_central_dir['offset']       = $v_data['offset'];
+        $p_central_dir['size']         = $v_data['size'];
+        $p_central_dir['disk']         = $v_data['disk'];
+        $p_central_dir['disk_start']   = $v_data['disk_start'];
 
 
         return $v_result;
@@ -2882,6 +2898,7 @@ class Archive_Zip
 
         // ----- Read the central directory informations
         $v_central_dir_to_add = array();
+
         $v_result = $p_archive_to_add->_readEndCentralDir($v_central_dir_to_add);
         if ($v_result != 1) {
             $this->_closeFd();
@@ -2912,7 +2929,9 @@ class Archive_Zip
         while ($v_size != 0) {
             $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
                           ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+
             $v_buffer = fread($this->_zip_fd, $v_read_size);
+
             @fwrite($v_zip_temp_fd, $v_buffer, $v_read_size);
             $v_size -= $v_read_size;
         }
@@ -2922,7 +2941,9 @@ class Archive_Zip
         while ($v_size != 0) {
             $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
                           ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+
             $v_buffer = fread($p_archive_to_add->_zip_fd, $v_read_size);
+
             @fwrite($v_zip_temp_fd, $v_buffer, $v_read_size);
             $v_size -= $v_read_size;
         }
@@ -2935,7 +2956,9 @@ class Archive_Zip
         while ($v_size != 0) {
             $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
                           ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+
             $v_buffer = @fread($this->_zip_fd, $v_read_size);
+
             @fwrite($v_zip_temp_fd, $v_buffer, $v_read_size);
             $v_size -= $v_read_size;
         }
@@ -2945,7 +2968,9 @@ class Archive_Zip
         while ($v_size != 0) {
             $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
                           ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+
             $v_buffer = @fread($p_archive_to_add->_zip_fd, $v_read_size);
+
             @fwrite($v_zip_temp_fd, $v_buffer, $v_read_size);
             $v_size -= $v_read_size;
         }
@@ -2961,6 +2986,7 @@ class Archive_Zip
         // Here is a trick : I swap the temporary fd with the zip fd, in order to use
         // the following methods on the temporary fil and not the real archive fd
         $v_swap = $this->_zip_fd;
+
         $this->_zip_fd = $v_zip_temp_fd;
         $v_zip_temp_fd = $v_swap;
 
@@ -2983,6 +3009,7 @@ class Archive_Zip
 
         // ----- Swap back the file descriptor
         $v_swap = $this->_zip_fd;
+
         $this->_zip_fd = $v_zip_temp_fd;
         $v_zip_temp_fd = $v_swap;
 
@@ -3054,7 +3081,9 @@ class Archive_Zip
         while ($v_size != 0) {
             $v_read_size = ($v_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
                           ? $v_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+
             $v_buffer = fread($v_zip_temp_fd, $v_read_size);
+
             @fwrite($this->_zip_fd, $v_buffer, $v_read_size);
             $v_size -= $v_read_size;
         }
@@ -3157,7 +3186,7 @@ class Archive_Zip
      */
     function _errorReset()
     {
-        $this->_error_code = 1;
+        $this->_error_code   = 1;
         $this->_error_string = '';
     }
     // ---------------------------------------------------------------------------
@@ -3317,7 +3346,9 @@ class Archive_Zip
             while ($p_size != 0) {
                 $v_read_size = ($p_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
                                 ? $p_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+
                 $v_buffer = @fread($p_src, $v_read_size);
+
                 @fwrite($p_dest, $v_buffer, $v_read_size);
                 $p_size -= $v_read_size;
             }
@@ -3325,7 +3356,9 @@ class Archive_Zip
             while ($p_size != 0) {
                     $v_read_size = ($p_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
                                     ? $p_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+
                     $v_buffer = @gzread($p_src, $v_read_size);
+
                     @fwrite($p_dest, $v_buffer, $v_read_size);
                     $p_size -= $v_read_size;
             }
@@ -3333,7 +3366,9 @@ class Archive_Zip
             while ($p_size != 0) {
                 $v_read_size = ($p_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
                                 ? $p_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+
                 $v_buffer = @fread($p_src, $v_read_size);
+
                 @gzwrite($p_dest, $v_buffer, $v_read_size);
                 $p_size -= $v_read_size;
             }
@@ -3341,7 +3376,9 @@ class Archive_Zip
             while ($p_size != 0) {
                 $v_read_size = ($p_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
                                 ? $p_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+
                 $v_buffer = @gzread($p_src, $v_read_size);
+
                 @gzwrite($p_dest, $v_buffer, $v_read_size);
                 $p_size -= $v_read_size;
             }
