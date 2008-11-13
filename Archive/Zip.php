@@ -3415,9 +3415,9 @@ class Archive_Zip
       }
 
       // ----- Compare the items
-      if (   ($v_list_dir[$i] != $v_list_path[$j])
+      if (($v_list_dir[$i] != $v_list_path[$j])
           && ($v_list_dir[$i] != '')
-          && ( $v_list_path[$j] != ''))  {
+          && ( $v_list_path[$j] != '')) {
         $v_result = 0;
       }
 
@@ -3429,23 +3429,27 @@ class Archive_Zip
     // ----- Look if everything seems to be the same
     if ($v_result) {
       // ----- Skip all the empty items
-      while (($j < $v_list_path_size) && ($v_list_path[$j] == '')) $j++;
-      while (($i < $v_list_dir_size) && ($v_list_dir[$i] == '')) $i++;
+      while (($j < $v_list_path_size) && ($v_list_path[$j] == '')) {
+          $j++;
+      }
+
+      while (($i < $v_list_dir_size) && ($v_list_dir[$i] == '')) {
+          $i++;
+      }
 
       if (($i >= $v_list_dir_size) && ($j >= $v_list_path_size)) {
         // ----- There are exactly the same
         $v_result = 2;
-      }
-      else if ($i < $v_list_dir_size) {
+      } else if ($i < $v_list_dir_size) {
         // ----- The path is shorter than the dir
         $v_result = 0;
       }
     }
 
     // ----- Return
-    return $v_result;
+        return $v_result;
     }
-  // ---------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------
 
     // ---------------------------------------------------------------------------
     // Function : $this->_tool_CopyBlock()
@@ -3467,55 +3471,44 @@ class Archive_Zip
      */
     function _tool_CopyBlock($p_src, $p_dest, $p_size, $p_mode=0)
     {
-    $v_result = 1;
+        $v_result = 1;
 
-    if ($p_mode==0)
-    {
-      while ($p_size != 0)
-      {
-        $v_read_size = ($p_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
-                        ? $p_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
-        $v_buffer = @fread($p_src, $v_read_size);
-        @fwrite($p_dest, $v_buffer, $v_read_size);
-        $p_size -= $v_read_size;
-      }
-    }
-    else if ($p_mode==1)
-    {
-      while ($p_size != 0)
-      {
-        $v_read_size = ($p_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
-                        ? $p_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
-        $v_buffer = @gzread($p_src, $v_read_size);
-        @fwrite($p_dest, $v_buffer, $v_read_size);
-        $p_size -= $v_read_size;
-      }
-    }
-    else if ($p_mode==2)
-    {
-      while ($p_size != 0)
-      {
-        $v_read_size = ($p_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
-                        ? $p_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
-        $v_buffer = @fread($p_src, $v_read_size);
-        @gzwrite($p_dest, $v_buffer, $v_read_size);
-        $p_size -= $v_read_size;
-      }
-    }
-    else if ($p_mode==3)
-    {
-      while ($p_size != 0)
-      {
-        $v_read_size = ($p_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
-                        ? $p_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
-        $v_buffer = @gzread($p_src, $v_read_size);
-        @gzwrite($p_dest, $v_buffer, $v_read_size);
-        $p_size -= $v_read_size;
-      }
-    }
+        if ($p_mode==0) {
+            while ($p_size != 0) {
+                $v_read_size = ($p_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
+                                ? $p_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+                $v_buffer = @fread($p_src, $v_read_size);
+                @fwrite($p_dest, $v_buffer, $v_read_size);
+                $p_size -= $v_read_size;
+            }
+        } else if ($p_mode==1) {
+            while ($p_size != 0) {
+                    $v_read_size = ($p_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
+                                    ? $p_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+                    $v_buffer = @gzread($p_src, $v_read_size);
+                    @fwrite($p_dest, $v_buffer, $v_read_size);
+                    $p_size -= $v_read_size;
+            }
+        } else if ($p_mode==2) {
+            while ($p_size != 0) {
+                $v_read_size = ($p_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
+                                ? $p_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+                $v_buffer = @fread($p_src, $v_read_size);
+                @gzwrite($p_dest, $v_buffer, $v_read_size);
+                $p_size -= $v_read_size;
+            }
+        } else if ($p_mode==3) {
+            while ($p_size != 0) {
+                $v_read_size = ($p_size < ARCHIVE_ZIP_READ_BLOCK_SIZE
+                                ? $p_size : ARCHIVE_ZIP_READ_BLOCK_SIZE);
+                $v_buffer = @gzread($p_src, $v_read_size);
+                @gzwrite($p_dest, $v_buffer, $v_read_size);
+                $p_size -= $v_read_size;
+            }
+        }
 
-    // ----- Return
-    return $v_result;
+        // ----- Return
+        return $v_result;
     }
     // ---------------------------------------------------------------------------
 
@@ -3539,22 +3532,21 @@ class Archive_Zip
      */
     function _tool_Rename($p_src, $p_dest)
     {
-    $v_result = 1;
+        $v_result = 1;
 
-    // ----- Try to rename the files
-    if (!@rename($p_src, $p_dest)) {
+        // ----- Try to rename the files
+        if (!@rename($p_src, $p_dest)) {
 
-      // ----- Try to copy & unlink the src
-      if (!@copy($p_src, $p_dest)) {
-        $v_result = 0;
-      }
-      else if (!@unlink($p_src)) {
-        $v_result = 0;
-      }
-    }
+            // ----- Try to copy & unlink the src
+            if (!@copy($p_src, $p_dest)) {
+                $v_result = 0;
+            } else if (!@unlink($p_src)) {
+                $v_result = 0;
+            }
+        }
 
-    // ----- Return
-    return $v_result;
+        // ----- Return
+        return $v_result;
     }
     // ---------------------------------------------------------------------------
 
@@ -3578,19 +3570,19 @@ class Archive_Zip
      */
     function _tool_TranslateWinPath($p_path, $p_remove_disk_letter=true)
     {
-    if (stristr(php_uname(), 'windows')) {
-      // ----- Look for potential disk letter
-      if (   ($p_remove_disk_letter)
-          && (($v_position = strpos($p_path, ':')) != false)) {
-          $p_path = substr($p_path, $v_position+1);
-      }
-      // ----- Change potential windows directory separator
-      if ((strpos($p_path, '\\') > 0) || (substr($p_path, 0,1) == '\\')) {
-          $p_path = strtr($p_path, '\\', '/');
-      }
+        if (stristr(php_uname(), 'windows')) {
+            // ----- Look for potential disk letter
+            if (($p_remove_disk_letter)
+                && (($v_position = strpos($p_path, ':')) != false)) {
+                $p_path = substr($p_path, $v_position+1);
+            }
+            // ----- Change potential windows directory separator
+            if ((strpos($p_path, '\\') > 0) || (substr($p_path, 0, 1) == '\\')) {
+                $p_path = strtr($p_path, '\\', '/');
+            }
+        }
+        return $p_path;
     }
-    return $p_path;
-    }
-  // ---------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------
 
 }
