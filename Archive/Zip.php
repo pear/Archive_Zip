@@ -131,7 +131,8 @@ class Archive_Zip
      * declare a new Archive_Zip object, identifying it by the name of the
      * zip file.
      *
-     * @param string $p_zipname  The name of the zip archive to create
+     * @param string $p_zipname The name of the zip archive to create
+     *
      * @access public
      */
     function Archive_Zip($p_zipname)
@@ -171,11 +172,12 @@ class Archive_Zip
      *   'remove_all_path' : Remove all the path of the archived files.
      *   'no_compression' : The archived files will not be compressed.
      *
-     * @access public
-     * @param mixed  $p_filelist  The list of the files or folders to add.
+     *
+     * @param mixed $p_filelist The list of the files or folders to add.
      *                             It can be a string with filenames separated
      *                             by a comma, or an array of filenames.
-     * @param mixed  $p_params  An array of variable parameters and values.
+     * @param mixed $p_params   An array of variable parameters and values.
+     *
      * @return mixed An array of file description on success,
      *               an error code on error
      */
@@ -236,10 +238,10 @@ class Archive_Zip
      *   'callback_post_add' : A callback function that will be called after
      *                         each entry archiving.
      *
-     * @param mixed $p_filelist  The list of the files or folders to add.
+     * @param mixed $p_filelist The list of the files or folders to add.
      *                               It can be a string with filenames separated
      *                               by a comma, or an array of filenames.
-     * @param mixed $p_params  An array of variable parameters and values.
+     * @param mixed $p_params   An array of variable parameters and values.
      *
      * @return mixed An array of file description on success,
      *               0 on an unrecoverable failure, an error code is logged.
@@ -384,8 +386,8 @@ class Archive_Zip
      *   'callback_post_extract' : A callback function that will be called after
      *                            each entry extraction.
      *
-     * @access public
-     * @param mixed  $p_params  An array of variable parameters and values.
+     * @param mixed $p_params An array of variable parameters and values.
+     *
      * @return mixed An array of file description on success,
      *               0 on an unrecoverable failure, an error code is logged.
      */
@@ -403,6 +405,7 @@ class Archive_Zip
         if ($p_params === 0) {
             $p_params = array();
         }
+
         if ($this->_check_parameters($p_params,
                                      array ('extract_as_string' => false,
                                             'add_path' => '',
@@ -447,8 +450,8 @@ class Archive_Zip
      *   'by_preg' : A regular expression (preg) that must match the extracted
      *               filename.
      *
-     * @access public
-     * @param mixed  $p_params  An array of variable parameters and values.
+     * @param mixed $p_params An array of variable parameters and values.
+     *
      * @return mixed An array of file description on success,
      *               0 on an unrecoverable failure, an error code is logged.
      */
@@ -500,8 +503,6 @@ class Archive_Zip
      *    comment : Comment associated with the archive file
      *    status : not_exist, ok
      *
-     * @access public
-     * @param mixed  $p_params  {Description}
      * @return mixed An array with the global properties or 0 on error.
      */
     function properties()
@@ -554,9 +555,10 @@ class Archive_Zip
      * If the archive already exist, it is replaced by the new one without
      * any warning.
      *
-     * @access public
-     * @param mixed  $p_archive  It can be a valid Archive_Zip object or
+     *
+     * @param mixed $p_archive It can be a valid Archive_Zip object or
      *                            the filename of a valid zip archive.
+     *
      * @return integer 1 on success, 0 on failure.
      */
     function duplicate($p_archive)
@@ -594,9 +596,9 @@ class Archive_Zip
      *  If the archive ($this) does not exist, the merge becomes a duplicate.
      *  If the archive to add does not exist, the merge is a success.
      *
-     * @access public
-     * @param mixed $p_archive_to_add  It can be a valid Archive_Zip object or
+     * @param mixed $p_archive_to_add It can be a valid Archive_Zip object or
      *                                 the filename of a valid zip archive.
+     *
      * @return integer 1 on success, 0 on failure.
      */
     function merge($p_archive_to_add)
@@ -646,8 +648,9 @@ class Archive_Zip
     /**
      * This method gives the latest error code name.
      *
+     * @param boolean $p_with_code If true, gives the name and the int value.
+     *
      * @access public
-     * @param boolean $p_with_code  If true, gives the name and the int value.
      * @return string The error name.
      */
     function errorName($p_with_code = false)
@@ -682,11 +685,12 @@ class Archive_Zip
     /**
      * This method returns the description associated with the latest error.
      *
-     * @access public
      * @param boolean $p_full If set to true gives the description with the
      *                         error code, the name and the description.
      *                         If set to false gives only the description
      *                         and the error code.
+     *
+     * @access public
      * @return string The error description.
      */
     function errorInfo($p_full = false)
@@ -726,6 +730,8 @@ class Archive_Zip
      * { Description }
      *
      * @param integer $p_level
+     *
+     * @return bool
      */
     function _checkFormat($p_level = 0)
     {
@@ -775,6 +781,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _create($p_list, &$p_result_list, &$p_params)
     {
@@ -814,6 +821,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _add($p_list, &$p_result_list, &$p_params)
     {
@@ -982,6 +990,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _openFd($p_mode)
     {
@@ -1017,6 +1026,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _closeFd()
     {
@@ -1050,6 +1060,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _addList($p_list, &$p_result_list,
                     $p_add_dir, $p_remove_dir, $p_remove_all_dir, &$p_params)
@@ -1120,6 +1131,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _addFileList($p_list, &$p_result_list,
                         $p_add_dir, $p_remove_dir, $p_remove_all_dir,
@@ -1220,6 +1232,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _addFile($p_filename, &$p_header, $p_add_dir, $p_remove_dir, $p_remove_all_dir, &$p_params)
     {
@@ -1442,6 +1455,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _writeFileHeader(&$p_header)
     {
@@ -1492,6 +1506,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _writeCentralFileHeader(&$p_header)
     {
@@ -1543,6 +1558,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _writeCentralHeader($p_nb_entries, $p_size, $p_offset, $p_comment)
     {
@@ -1575,6 +1591,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _list(&$p_list)
     {
@@ -1648,6 +1665,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _convertHeader2FileInfo($p_header, &$p_info)
     {
@@ -1690,6 +1708,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _extractByRule(&$p_file_list, &$p_params)
     {
@@ -1903,6 +1922,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _extractFile(&$p_entry, $p_path, $p_remove_path, $p_remove_all_path, &$p_params)
     {
@@ -2127,6 +2147,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _extractFileAsString(&$p_entry, &$p_string)
     {
@@ -2182,6 +2203,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _readFileHeader(&$p_header)
     {
@@ -2286,6 +2308,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _readCentralFileHeader(&$p_header)
     {
@@ -2392,6 +2415,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _readEndCentralDir(&$p_central_dir)
     {
@@ -2527,6 +2551,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _deleteByRule(&$p_result_list, &$p_params)
     {
@@ -2804,6 +2829,7 @@ class Archive_Zip
      * { Description }
      *
      * @param [type] $p_is_dir
+     * @return int
      */
     function _dirCheck($p_dir, $p_is_dir = false)
     {
@@ -2856,6 +2882,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _merge(&$p_archive_to_add)
     {
@@ -3044,7 +3071,7 @@ class Archive_Zip
      * Archive_Zip::_duplicate()
      *
      * { Description }
-     *
+     * @return int
      */
     function _duplicate($p_archive_filename)
     {
@@ -3105,6 +3132,8 @@ class Archive_Zip
      *
      * @param integer $p_error_code
      * @param string $p_error_string
+     *
+     * @return int
      */
     function _check_parameters(&$p_params, $p_default)
     {
@@ -3163,8 +3192,10 @@ class Archive_Zip
      *
      * { Description }
      *
-     * @param integer $p_error_code
-     * @param string $p_error_string
+     * @param integer $p_error_code   Error code
+     * @param string  $p_error_string Error message
+     *
+     * @return void
      */
     function _errorLog($p_error_code = 0, $p_error_string = '')
     {
@@ -3183,6 +3214,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return void
      */
     function _errorReset()
     {
@@ -3202,6 +3234,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return string
      */
     function _tool_PathReduction($p_dir)
     {
@@ -3255,6 +3288,7 @@ class Archive_Zip
      *
      * { Description }
      *
+     * @return int
      */
     function _tool_PathInclusion($p_dir, $p_path)
     {
@@ -3337,6 +3371,8 @@ class Archive_Zip
      * { Description }
      *
      * @param integer $p_mode
+     *
+     * @return int
      */
     function _tool_CopyBlock($p_src, $p_dest, $p_size, $p_mode = 0)
     {
@@ -3405,7 +3441,7 @@ class Archive_Zip
      * _tool_Rename()
      *
      * { Description }
-     *
+     * @return int
      */
     function _tool_Rename($p_src, $p_dest)
     {
@@ -3444,6 +3480,8 @@ class Archive_Zip
      * { Description }
      *
      * @param [type] $p_remove_disk_letter
+     *
+     * @return string
      */
     function _tool_TranslateWinPath($p_path, $p_remove_disk_letter = true)
     {
