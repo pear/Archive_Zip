@@ -77,7 +77,6 @@ define('ARCHIVE_ZIP_PARAM_EXTRACT_AS_STRING', 'extract_as_string');
 define('ARCHIVE_ZIP_PARAM_NO_COMPRESSION', 'no_compression');
 define('ARCHIVE_ZIP_PARAM_BY_NAME', 'by_name');
 define('ARCHIVE_ZIP_PARAM_BY_INDEX', 'by_index');
-define('ARCHIVE_ZIP_PARAM_BY_EREG', 'by_ereg');
 define('ARCHIVE_ZIP_PARAM_BY_PREG', 'by_preg');
 
 define('ARCHIVE_ZIP_PARAM_PRE_EXTRACT', 'callback_pre_extract');
@@ -357,7 +356,7 @@ class Archive_Zip
     /**
      * This method extract the files and folders which are in the zip archive.
      * It can extract all the archive or a part of the archive by using filter
-     * feature (extract by name, by index, by ereg, by preg). The extraction
+     * feature (extract by name, by index, by preg). The extraction
      * can occur in the current path or an other path.
      * All the advanced features are activated by the use of variable
      * parameters.
@@ -377,8 +376,6 @@ class Archive_Zip
      *               or an array of file/dir names to extract from the archive.
      *   'by_index' : A string with range of indexes separated by ',',
      *                (sample "1,3-5,12").
-     *   'by_ereg' : A regular expression (ereg) that must match the extracted
-     *               filename.
      *   'by_preg' : A regular expression (preg) that must match the extracted
      *               filename.
      *   'callback_pre_extract' : A callback function that will be called before
@@ -416,7 +413,6 @@ class Archive_Zip
                                             'set_chmod' => 0,
                                             'by_name' => '',
                                             'by_index' => '',
-                                            'by_ereg' => '',
                                             'by_preg' => '') ) != 1) {
             return 0;
         }
@@ -445,8 +441,6 @@ class Archive_Zip
      *               or an array of file/dir names to delete from the archive.
      *   'by_index' : A string with range of indexes separated by ',',
      *                (sample "1,3-5,12").
-     *   'by_ereg' : A regular expression (ereg) that must match the extracted
-     *               filename.
      *   'by_preg' : A regular expression (preg) that must match the extracted
      *               filename.
      *
@@ -468,7 +462,6 @@ class Archive_Zip
         if ($this->_check_parameters($p_params,
                                      array ('by_name' => '',
                                             'by_index' => '',
-                                            'by_ereg' => '',
                                             'by_preg' => '') ) != 1) {
             return 0;
         }
@@ -476,7 +469,6 @@ class Archive_Zip
         // ----- Check that at least one rule is set
         if (($p_params['by_name'] == '')
             && ($p_params['by_index'] == '')
-            && ($p_params['by_ereg'] == '')
             && ($p_params['by_preg'] == '')) {
             $this->_errorLog(ARCHIVE_ZIP_ERR_INVALID_PARAMETER,
                              'At least one filtering rule must'
@@ -1806,12 +1798,6 @@ class Archive_Zip
                         $v_extract = true;
                     }
                 }
-            } else if ((isset($p_params[ARCHIVE_ZIP_PARAM_BY_EREG]))
-                        && ($p_params[ARCHIVE_ZIP_PARAM_BY_EREG] != "")) {
-                // ----- Look for extract by ereg rule
-                if (ereg($p_params[ARCHIVE_ZIP_PARAM_BY_EREG], $v_header['stored_filename'])) {
-                    $v_extract = true;
-                }
             } else if (   (isset($p_params[ARCHIVE_ZIP_PARAM_BY_PREG]))
                    && ($p_params[ARCHIVE_ZIP_PARAM_BY_PREG] != "")) {
                 // ----- Look for extract by preg rule
@@ -2633,15 +2619,6 @@ class Archive_Zip
                         // ----- Look for a filename
                         $v_found = true;
                     }
-                }
-            } else if ((isset($p_params[ARCHIVE_ZIP_PARAM_BY_EREG]))
-                   && ($p_params[ARCHIVE_ZIP_PARAM_BY_EREG] != "")) {
-
-                // ----- Look for extract by ereg rule
-
-                if (ereg($p_params[ARCHIVE_ZIP_PARAM_BY_EREG],
-                       $v_header_list[$v_nb_extracted]['stored_filename'])) {
-                    $v_found = true;
                 }
             } else if ((isset($p_params[ARCHIVE_ZIP_PARAM_BY_PREG]))
                    && ($p_params[ARCHIVE_ZIP_PARAM_BY_PREG] != "")) {
