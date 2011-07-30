@@ -1,45 +1,80 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
-<!DOCTYPE package SYSTEM "package.dtd">
-<package version="1.0">
-  <name>Archive_Zip</name>
-  <summary>Zip file management class</summary>
-  <description>This class provides handling of zip files in PHP.
-It supports creating, listing, extracting and adding to zip files.
-</description>
-  <license>LGPL</license>
-  <maintainers>
-    <maintainer>
-      <user>vblavet</user>
-      <role>lead</role>
-      <name>Vincent Blavet</name>
-      <email>vincent@blavet.net</email>
-    </maintainer>
-  </maintainers>
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.9.3" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+ <name>Archive_Zip</name>
+ <channel>pear.php.net</channel>
+ <summary>Zip file management class</summary>
+ <description>This class provides handling of zip files in PHP.
+It supports creating, listing, extracting and adding to zip files.</description>
+ <lead>
+  <name>Vincent Blavet</name>
+  <user>vblavet</user>
+  <email>vincent@blavet.net</email>
+  <active>yes</active>
+ </lead>
+ <date>2011-07-30</date>
+ <time>18:31:04</time>
+ <version>
+  <release>0.1.2</release>
+  <api>0.1.1</api>
+ </version>
+ <stability>
+  <release>beta</release>
+  <api>beta</api>
+ </stability>
+ <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+ <notes>
+QA release
+
+Bug #18681	Can&apos;t install archive_zip package
+ </notes>
+ <contents>
+  <dir baseinstalldir="/" name="/">
+   <file baseinstalldir="/" md5sum="2feb84f78944f32b048a148ae6331a6c" name="Archive/Zip.php" role="php" />
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>4.0.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0b1</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <phprelease />
+ <changelog>
   <release>
-    <version>0.1.1</version>
-    <date>2005-11-26</date>
-    <state>beta</state>
-    <notes>Correct package download problem
-</notes>
-    <provides type="class" name="Archive_Zip" />
-    <provides type="function" name="Archive_Zip::create" />
-    <provides type="function" name="Archive_Zip::add" />
-    <provides type="function" name="Archive_Zip::delete" />
-    <provides type="function" name="Archive_Zip::duplicate" />
-    <provides type="function" name="Archive_Zip::listContent" />
-    <provides type="function" name="Archive_Zip::merge" />
-    <provides type="function" name="Archive_Zip::extract" />
-    <provides type="function" name="Archive_Zip::properties" />
-    <filelist>
-      <file role="php" baseinstalldir="/" name="Archive/Zip.php"/>
-    </filelist>
+   <version>
+    <release>0.1.0</release>
+    <api>0.1.0</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2005-11-21</date>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+   <notes>
+First release
+   </notes>
   </release>
-  <changelog>
-    <release>
-      <version>0.1.0</version>
-      <date>2005-11-21</date>
-      <state>beta</state>
-      <notes>First release</notes>
-    </release>
-  </changelog>
+  <release>
+   <version>
+    <release>0.1.2</release>
+    <api>0.1.1</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2011-07-30</date>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+   <notes>
+QA release
+
+Bug #18681	Can&apos;t install archive_zip package
+   </notes>
+  </release>
+ </changelog>
 </package>
