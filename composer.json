@@ -1,0 +1,31 @@
+{
+    "authors": [
+        {
+            "email": "vincent@blavet.net",
+            "name": "Vincent Blavet",
+            "role": "Lead"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Archive_Zip": "./"
+        }
+    },
+    "description": "More info available on: http://pear.php.net/package/Archive_Zip",
+    "include-path": [
+        "./"
+    ],
+    "license": "LGPL",
+    "name": "pear/archive_zip",
+    "support": {
+        "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Archive_Zip",
+        "source": "https://github.com/pear/Archive_Zip"
+    },
+    "type": "library",
+    "require": {
+        "pear/pear_exception": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    }
+}
