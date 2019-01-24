@@ -29,7 +29,7 @@ Bug #18681	Can&apos;t install archive_zip package
  </notes>
  <contents>
   <dir baseinstalldir="/" name="/">
-   <file baseinstalldir="/" md5sum="2feb84f78944f32b048a148ae6331a6c" name="Archive/Zip.php" role="php" />
+   <file baseinstalldir="/" md5sum="f6517762f00791f99ac4dddd427f0798" name="Archive/Zip.php" role="php" />
   </dir>
  </contents>
  <dependencies>
